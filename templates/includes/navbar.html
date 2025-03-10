@@ -3,7 +3,17 @@
   <div class="container-fluid">
     <a class="navbar-brand" href="/">
       <img src="{% static 'info/img/univ-logo.png' %}" alt="Logo" width="30" class="d-inline-block align-text-top">
-      University
+      {% if request.user.is_authenticated  %}
+        {% if request.user.is_student %}
+          Student Dashboard
+        {% elif request.user.is_teacher %}
+          Teacher Dashboard
+        {% else %}
+          Admin Dashboard
+        {% endif %}
+      {% else %}
+        University
+      {% endif %}
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -11,16 +21,28 @@
     <div class="collapse navbar-collapse" id="navbar">
       <ul class="navbar-nav me-auto mb-2 mb-sm-0">
         {% if request.user.is_authenticated  %}
-          <li class="nav-item">
-            {% if request.user.is_superuser %}
-              <a class="nav-link" href="#">Home</a>
-            {% else %}
-              <a class="nav-link" href="#">Home</a>
-            {% endif %}
-          </li>
-          <li>
-            <a class="nav-link" href="#">Profile</a>
-          </li>
+          {% if request.user.is_student %}
+            <li class="nav-item">
+                <a class="nav-link" href="#">Home</a>            
+            </li>
+            <li>
+              <a class="nav-link" href="#">Profile</a>
+            </li>
+          {% elif request.user.is_teacher %}
+            <li class="nav-item">
+                <a class="nav-link" href="#">Home</a>            
+            </li>
+            <li>
+              <a class="nav-link" href="#">Profile</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="#">Home</a>            
+            </li>
+            <li>
+              <a class="nav-link" href="#">Profile</a>
+            </li>
+          {% endif %}
         {% endif %}
       </ul>
 
