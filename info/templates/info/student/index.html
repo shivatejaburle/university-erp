@@ -1,0 +1,37 @@
+{% extends 'base_master.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col d-none d-md-block">
+            <div class="text-center">
+                <h1 class="mt-5">Welcome {{request.user}}</h1>
+                <img src="{% static 'info/img/univ-logo.png' %}" alt="univ-logo" class="img-fluid">
+                <p class="lead">University Enterprise Resource Planning System</p>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="row">
+                <div class="col-md-4 text-center m-sm-0 m-md-3">
+                    <h2 class="text-secondary">Attendance</h2>
+                    <a href="#">
+                        <img src="{% static 'info/img/attendance.jpg' %}" alt="teacher" class="img-fluid img-thumbnail">
+                    </a>
+                </div>
+                <div class="col-md-4 text-center m-sm-0 m-md-3">
+                    <h2 class="text-secondary">Marks</h2>
+                    <a href="#">
+                        <img src="{% static 'info/img/marks.jpg' %}" alt="student" class="img-fluid img-thumbnail">
+                    </a>
+                </div>
+                <div class="col-md-4 text-center m-sm-0 m-md-3">
+                    <h2 class="text-secondary">Timetable</h2>
+                    <a href="#">
+                        <img src="{% static 'info/img/timetable.png' %}" alt="admin" class="img-fluid img-thumbnail">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
