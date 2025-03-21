@@ -10,4 +10,5 @@ urlpatterns = [
     path('admin_home/', views.AdminView.as_view(), name = 'admin_view'),
     path('teacher/', views.TeacherView.as_view(), name = 'teacher_view'),
     path('student/', views.StudentView.as_view(), name = 'student_view'),
+    path('create/admin/', views.CreateAdminUser.as_view(), name = 'create_admin_user'),
 ]

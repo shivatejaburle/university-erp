@@ -1,0 +1,38 @@
+{% extends 'base_master.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+    
+{% block content %}
+<div class="container">
+    <div class="row d-sm-block d-md-none">
+        <!-- <div class="text-center">
+            <h1 class="mb-4">Create Admin User</h1>
+        </div> -->
+    </div>
+    <div class="row">
+        <div class="col d-none d-md-block">
+            <div class="text-center">
+                <img src="{% static 'info/img/admin.png' %}" alt="univ-logo" class="img-fluid">
+            </div>
+        </div>
+        <div class="col-md-12 col-lg-6">
+            <div class="row">
+                <div class="col">
+                    <h1 class="mt-3 text-center mb-3">Admin Registration Form</h1>
+                    <form method="POST" action="{% url 'info:create_admin_user' %}">
+                        {% csrf_token %}
+                        {% bootstrap_form form %}
+                        <button type="submit" class="btn btn-primary">Create Admin</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'info/js/script.js' %}"></script>
+{% endblock script %}
+    
