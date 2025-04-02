@@ -26,23 +26,50 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'info:student_view' %}">Home</a>            
             </li>
-            <li>
-              <a class="nav-link" href="#">Profile</a>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:student_attendance' request.user.student.roll_number %}">Attendance</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:student_marks' request.user.student.roll_number %}">Marks</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:student_timetable' request.user.student.class_id_id %}">Timetable</a>
             </li>
           <!-- Teacher Dashboard -->
           {% elif request.user.is_teacher %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'info:teacher_view' %}">Home</a>            
             </li>
-            <li>
-              <a class="nav-link" href="#">Profile</a>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:teacher_class_view' %}">Attendance</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:teacher_view_marks' %}">Marks</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:teacher_timetable' request.user.teacher.teacher_id %}">Timetable</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:teacher_report_classes' %}">Reports</a>
             </li>
           <!-- Admin Dashboard -->
           {% else %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'info:admin_view' %}">Home</a>            
             </li>
-            <li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:teacher_create' %}">Add Teacher</a>            
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:student_create' %}">Add Student</a>            
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:create_admin_user' %}">Add Admin</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:manage_data_nav' %}">Manage Data</a>            
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="/admin" target="_blank">Django Administration</a>
             </li>
           {% endif %}

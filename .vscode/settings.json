@@ -2,6 +2,12 @@
     "cSpell.ignoreWords": [
         "UERPS",
         "allauth",
-        "lika"
+        "attendanceclass",
+        "endcomment",
+        "endfor",
+        "forloop",
+        "lika",
+        "newwindow",
+        "onclick"
     ]
 }

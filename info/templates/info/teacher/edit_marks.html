@@ -1,0 +1,34 @@
+{% extends 'base_master.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>Edit Marks in {{ marks_class.assign.course.short_name }}</h1>
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="table-responsive mt-3">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Student Name</th>
+                            <th scope="col">Total Marks</th>
+                            <th scope="col">Marks Gained</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for marks in marks_list %}
+                        <tr>
+                            <td class="align-middle">{{marks.student_course.student.name}}</td>
+                            <td class="align-middle">{{marks.total_marks}}</td>
+                            <td class="align-middle">
+                                <input class="form-control" type="number" name="{{marks.student_course.student.roll_number}}" id="{{marks.student_course.student.roll_number}}" min="0" max="{{marks.total_marks}}" value="{{marks.marks1}}" title="Enter marks gained by {{marks.student_course.student.name}}" placeholder="Marks out of {{marks.total_marks}}">
+                            </td>
+                        </tr>
+                        {% endfor %}   
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-primary">Update Marks</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
+    

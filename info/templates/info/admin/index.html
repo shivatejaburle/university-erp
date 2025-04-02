@@ -19,13 +19,13 @@
             <div class="row">
                 <div class="col-6 col-md-4 col-lg-4 text-center m-sm-0 m-lg-3">
                     <h2 class="text-secondary">Add Teacher</h2>
-                    <a href="#">
+                    <a href="{% url 'info:teacher_create' %}">
                         <img src="{% static 'info/img/teacher.png' %}" alt="teacher" class="img-fluid img-thumbnail">
                     </a>
                 </div>
                 <div class="col-6 col-md-4 col-lg-4 text-center m-sm-0 m-lg-3">
                     <h2 class="text-secondary">Add Student</h2>
-                    <a href="#">
+                    <a href="{% url 'info:student_create' %}">
                         <img src="{% static 'info/img/student.png' %}" alt="student" class="img-fluid img-thumbnail">
                     </a>
                 </div>
@@ -36,7 +36,10 @@
                     </a>
                 </div>
                 <div class="col-6 col-md-4 col-lg-4 text-center m-sm-0 m-lg-3">
-                    
+                    <h2 class="text-secondary">Manage Data</h2>
+                    <a href="{% url 'info:manage_data_nav' %}">
+                        <img src="{% static 'info/img/univ_data.png' %}" alt="University Data" class="img-fluid img-thumbnail">
+                    </a>
                 </div>
             </div>
         </div>

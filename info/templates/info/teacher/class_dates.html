@@ -1,0 +1,65 @@
+{% extends 'base_master.html' %}
+
+
+{% block content %}
+<div class="container">
+    <h1>Attendance</h1>
+    <div class="table-responsive mt-3">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for attendance in attendance_list %}
+                <tr>
+                    <td class="align-middle">{{attendance.date}}</td>
+                    {% if attendance.status == 0 %}
+                        <td class="align-middle text-danger">Not Marked</td>
+                        <td class="align-middle">
+                            <button type="button" class="btn btn-sm btn-primary m-1"
+                                onclick="window.location = '{% url 'info:teacher_attendance_view' attendance.id %}'">
+                            Enter Attendance
+                            </button>
+                            <button type="button" class="btn btn-sm btn-warning m-1"
+                                onclick="window.location = '{% url 'info:cancel_class' attendance.id %}'">
+                            Cancel Class
+                            </button>
+                        </td>
+                    {% elif attendance.status == 1 %}
+                        <td class="align-middle text-success">Marked</td>
+                        <td class="align-middle">
+                            <button type="button" class="btn btn-sm btn-secondary m-1"
+                                onclick="window.location = '{% url 'info:edit_attendance' attendance.id %}'">
+                            Edit Attendance
+                        </button>
+                        </td>
+                    {% else %}
+                        <td class="align-middle text-warning">Cancelled</td>
+                        <td class="align-middle">
+                            <button type="button" class="btn btn-sm btn-primary m-1"
+                                onclick="window.location = '{% url 'info:teacher_attendance_view' attendance.id %}'">
+                            Enter Attendance
+                        </button>
+                        </td> 
+                    {% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">
+                        <div class="alert alert-info mt-3" role="alert">
+                            Student has no Courses.
+                        </div>
+                    </td>
+                </tr>
+                    
+                {% endfor %}   
+            </tbody>
+        </table>
+    </div>
+        
+</div>
+{% endblock content %}

@@ -24,6 +24,7 @@
                         {% csrf_token %}
                         {% bootstrap_form form %}
                         <button type="submit" class="btn btn-primary">Create Admin</button>
+                        <button type="button" class="btn btn-danger" onclick="window.location='{% url 'info:admin_view' %}'">Cancel</button>
                     </form>
                 </div>
             </div>
@@ -31,8 +32,3 @@
     </div>
 </div>
 {% endblock %}
-
-{% block script %}
-    <script src="{% static 'info/js/script.js' %}"></script>
-{% endblock script %}
-    

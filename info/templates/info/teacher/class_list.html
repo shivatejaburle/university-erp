@@ -1,0 +1,57 @@
+{% extends 'base_master.html' %}
+
+
+{% block content %}
+<div class="container">
+    <h1>List of Classes</h1>
+    <div class="table-responsive mt-3">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Class</th>
+                    <th scope="col">Course</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assign in teacher.assign_set.all %}
+                <tr>
+                    <td class="align-middle">{{assign.class_id}}</td>
+                    <td class="align-middle">{{assign.course}}</td>
+                    <td class="align-middle">
+                        {% if choice == 1 %}
+                            <button type="button" class="btn btn-sm btn-primary m-1"
+                                onclick="window.location = '{% url 'info:teacher_class_detail_view' assign.id %}'">
+                            View Attendance
+                            </button>
+                            <button type="button" class="btn btn-sm btn-warning m-1"
+                                onclick="window.location = '{% url 'info:extra_class' assign.id %}'">
+                            Extra Class
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger m-1"
+                                onclick="window.location = '{% url 'info:view_students' assign.id %}'">
+                            View Students
+                            </button>
+                        {% elif choice == 2 %}
+                            <button type="button" class="btn btn-sm btn-primary m-1"
+                                onclick="window.location = '{% url 'info:teacher_marks_view' assign.id %}'">
+                            Enter Marks
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger m-1"
+                                onclick="window.location = '{% url 'info:teacher_view_student_marks' assign.id %}'">
+                            View Students
+                            </button>
+                        {% elif choice == 3 %}
+                            <button type="button" class="btn btn-sm btn-primary m-1"
+                                onclick="window.location = '{% url 'info:teacher_report_view' assign.id %}'">
+                            Generate Reports
+                            </button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}   
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

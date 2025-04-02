@@ -1,0 +1,46 @@
+{% extends 'base_master.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>Report for {{student_course_list.0.course}}</h1>
+        <div class="table-responsive mt-3">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Roll Number</th>
+                        <th scope="col">Student Name</th>
+                        <th scope="col">Attendance %</th>
+                        <th scope="col">CIE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student_course in student_course_list %}
+                    <tr>
+                        <td class="align-middle">{{student_course.student_id}}</td>
+                        <td class="align-middle">{{student_course.student.name}}</td>
+                        
+                        {% if student_course.get_attendance > 75 %}
+                            <td class="align-middle text-success">{{student_course.get_attendance}} %</td>
+                        {% else %}
+                            <td class="align-middle text-danger">{{student_course.get_attendance}} %</td>
+                        {% endif %}
+
+                        {% if student_course.get_cie > 25 %}
+                            <td class="align-middle text-success">{{student_course.get_cie}} %</td>
+                        {% else %}
+                            <td class="align-middle text-danger">{{student_course.get_cie}} %</td>
+                        {% endif %}
+                    </tr>
+                    {% empty %}
+                        <tr colspan="8">
+                            <div class="alert alert-info mt-3" role="alert">
+                                Students has no Courses.
+                            </div>
+                        </tr>
+                    {% endfor %}   
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}
+    
