@@ -14,37 +14,7 @@ from django.http import HttpResponseRedirect
 class IndexView(TemplateView):
     template_name = 'info/index.html'
 
-# Admin View
-class AdminView(LoginRequiredMixin, TemplateView):
-    template_name = 'info/admin/index.html'
-
-    def get(self, request, *args, **kwargs):
-        if request.user.is_superuser:
-            context = self.get_context_data(**kwargs)
-            return self.render_to_response(context)
-        return redirect('info:unauthorize_view')
-
-# Teacher View
-class TeacherView(LoginRequiredMixin, TemplateView):
-    template_name = 'info/teacher/index.html'
-
-    def get(self, request, *args, **kwargs):
-        if request.user.is_teacher:
-            context = self.get_context_data(**kwargs)
-            return self.render_to_response(context)
-        return redirect('info:unauthorize_view')
-
-# Student View
-class StudentView(LoginRequiredMixin, TemplateView):
-    template_name = 'info/student/index.html'
-    
-    def get(self, request, *args, **kwargs):
-        if request.user.is_student:
-            context = self.get_context_data(**kwargs)
-            return self.render_to_response(context)
-        return redirect('info:unauthorize_view')
-    
-# Authorize View
+# Unauthorize View
 class UnauthorizeView(TemplateView):
     template_name = 'info/unauthorize.html'
 
@@ -60,6 +30,40 @@ def login_success(request):
         else:
             return render(request, 'info/index.html')
     return render(request, 'info/index.html')
+
+# ================== Dashboards ================== #
+
+# Admin Dashboard View
+class AdminView(LoginRequiredMixin, TemplateView):
+    template_name = 'info/admin/index.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            context = self.get_context_data(**kwargs)
+            return self.render_to_response(context)
+        return redirect('info:unauthorize_view')
+
+# Teacher Dashboard View
+class TeacherView(LoginRequiredMixin, TemplateView):
+    template_name = 'info/teacher/index.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_teacher:
+            context = self.get_context_data(**kwargs)
+            return self.render_to_response(context)
+        return redirect('info:unauthorize_view')
+
+# Student Dashboard View
+class StudentView(LoginRequiredMixin, TemplateView):
+    template_name = 'info/student/index.html'
+    
+    def get(self, request, *args, **kwargs):
+        if request.user.is_student:
+            context = self.get_context_data(**kwargs)
+            return self.render_to_response(context)
+        return redirect('info:unauthorize_view')
+
+# ================== Admin Views ================== #
 
 # Create Admin User
 class CreateAdminUser(LoginRequiredMixin, CreateView):
@@ -533,7 +537,9 @@ class DeleteStudent(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         student.delete()
         messages.success(request, "Student was successfully deleted.")
         return redirect(self.success_url)
-    
+
+# ================== Teacher Views ================== #
+
 # Teacher Classes View
 class TeacherClassView(LoginRequiredMixin, TemplateView):
     template_name = 'info/teacher/class_list.html'
@@ -957,7 +963,9 @@ class TeacherReportView(LoginRequiredMixin, TemplateView):
             context['student_course_list'] = student_course_list
             return self.render_to_response(context)
         return redirect('info:unauthorize_view')
-    
+
+# ================== Student Views ================== #
+
 # Student Attendance
 class StudentAttendanceView(LoginRequiredMixin, TemplateView):
     template_name = 'info/student/attendance.html'
