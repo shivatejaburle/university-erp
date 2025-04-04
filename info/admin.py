@@ -82,6 +82,7 @@ class StudentCourseAdmin(admin.ModelAdmin):
     ordering = ['student__class_id__department__name', 'student__class_id__id', 'student__roll_number']
     inlines = [MarksInline]
 
+# Reset Attendance
 class AttendanceClassAdmin(admin.ModelAdmin):
     list_display = ('assign', 'date', 'status')
     ordering = ['assign', 'date']

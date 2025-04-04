@@ -28,7 +28,11 @@
                                     {% for department in department_list  %}
                                     <tr>
                                         <td class="align-middle">{{department.id}}</td>
-                                        <td class="align-middle">{{department.name}}</td>
+                                        <td class="align-middle">
+                                            <a href="{{department.get_absolute_url}}" class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+                                                {{department.name}}
+                                            </a>
+                                        </td>
                                         <td class="align-middle">
                                             <button type="button" class="btn btn-sm btn-secondary m-1"
                                                 onclick="window.location = '{% url 'info:department_update' department.id %}'">
@@ -129,7 +133,11 @@
                                 <tbody>
                                     {% for class in class_list  %}
                                     <tr>
-                                        <td class="align-middle">{{class.id}}</td>
+                                        <td class="align-middle">
+                                            <a href="{{class.get_absolute_url}}" class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+                                                {{class.id}}
+                                            </a>
+                                        </td>
                                         <td class="align-middle">{{class.section}}</td>
                                         <td class="align-middle">{{class.semester}}</td>
                                         <td class="align-middle">{{class.department.name}}</td>
@@ -216,7 +224,7 @@
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed fs-3 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#assign" aria-expanded="false" aria-controls="assign">
-                    Assign Class and Course to Teacher
+                    Assign Teachers
                 </button>
             </h2>
             <div id="assign" class="accordion-collapse collapse" data-bs-parent="#accordionManageData">
@@ -237,7 +245,11 @@
                                     {% for assign in assign_list  %}
                                     <tr>
                                         <td class="align-middle">{{assign.teacher}}</td>
-                                        <td class="align-middle">{{assign.class_id}}</td>
+                                        <td class="align-middle">
+                                            <a href="{{assign.get_absolute_url}}" class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+                                                {{assign.class_id}}
+                                            </a>
+                                        </td>
                                         <td class="align-middle">{{assign.course}}</td>
                                         <td class="align-middle">
                                             <button type="button" class="btn btn-sm btn-secondary m-1"
@@ -266,7 +278,7 @@
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed fs-3 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#assignSlots" aria-expanded="false" aria-controls="assignSlots">
-                    Assign Time Slots
+                    Assign Periods
                 </button>
             </h2>
             <div id="assignSlots" class="accordion-collapse collapse" data-bs-parent="#accordionManageData">
@@ -357,6 +369,86 @@
                     {% else %}
                         <div class="alert alert-info mt-3" role="alert">
                             There are no Students in the database.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <!-- Marks -->
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed fs-3 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#marks" aria-expanded="false" aria-controls="marks">
+                    Marks
+                </button>
+            </h2>
+            <div id="marks" class="accordion-collapse collapse" data-bs-parent="#accordionManageData">
+                <div class="accordion-body">
+                    {% if marks_list %}
+                        <div class="table-responsive mt-3">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Student Name</th>
+                                        <th scope="col">Course</th>
+                                        <th scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for obj in marks_list  %}
+                                    <tr>
+                                        <td class="align-middle">{{obj.student}}</td>
+                                        <td class="align-middle">{{obj.course}}</td>
+                                        <td class="align-middle">
+                                            <button type="button" class="btn btn-sm btn-primary m-1"
+                                                onclick="window.location = '{% url 'info:student_course_detail' obj.id %}'">
+                                            View Marks
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}   
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info mt-3" role="alert">
+                            Marks not available for the Student.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <!-- Reset Attendance -->
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed fs-3 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#resetAttendance" aria-expanded="false" aria-controls="resetAttendance">
+                    Reset Attendance
+                </button>
+            </h2>
+            <div id="resetAttendance" class="accordion-collapse collapse" data-bs-parent="#accordionManageData">
+                <div class="accordion-body">
+                    <a href="{% url 'info:attendance_reset' %}" class="btn btn-primary">Reset Attendance</a>
+                    {% if attendance_range_list %}
+                        <div class="table-responsive mt-3">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Start Date</th>
+                                        <th scope="col">End Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for obj in attendance_range_list  %}
+                                    <tr>
+                                        <td class="align-middle">{{obj.start_date}}</td>
+                                        <td class="align-middle">{{obj.end_date}}</td>
+                                    </tr>
+                                    {% endfor %}   
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info mt-3" role="alert">
+                            Attendance Range is not available.
                         </div>
                     {% endif %}
                 </div>

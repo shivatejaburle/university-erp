@@ -4,6 +4,7 @@ import math
 from django.core.validators import MinValueValidator, MaxValueValidator
 from datetime import timedelta
 from django.db.models.signals import post_save, post_delete
+from django.urls import reverse
 
 # ================== Constants ================== #
 gender_choices = (
@@ -52,6 +53,9 @@ class Department(models.Model):
     id = models.CharField(max_length=50, primary_key=True)
     name = models.CharField(max_length=200)
 
+    def get_absolute_url(self):
+        return reverse('info:department_detail', kwargs={'pk': self.pk})
+
     def __str__(self):
         return self.name
     
@@ -74,6 +78,9 @@ class Class(models.Model):
 
     class Meta:
         verbose_name_plural = 'Classes'
+
+    def get_absolute_url(self):
+        return reverse('info:class_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         dept = Department.objects.get(name = self.department)
@@ -111,6 +118,9 @@ class Assign(models.Model):
 
     class Meta:
         unique_together = ('course', 'class_id', 'teacher')
+
+    def get_absolute_url(self):
+        return reverse('info:assign_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         cl = Class.objects.get(id = self.class_id_id)
@@ -200,6 +210,9 @@ class StudentCourse(models.Model):
     class Meta:
         unique_together = ('student', 'course')
         verbose_name_plural = 'Marks'
+
+    def get_absolute_url(self):
+        return reverse('info:student_course_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         student = Student.objects.get(name = self.student)

@@ -8,6 +8,7 @@
         "forloop",
         "lika",
         "newwindow",
-        "onclick"
+        "onclick",
+        "studentcourse"
     ]
 }

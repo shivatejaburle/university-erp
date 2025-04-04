@@ -1,14 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import TemplateView, CreateView, UpdateView, DeleteView, RedirectView
+from django.views.generic import TemplateView, CreateView, UpdateView, DeleteView, RedirectView, FormView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from info.models import User, Department, Course, Class, Teacher, Assign, AssignTime, Student, AttendanceClass, Attendance, AttendanceTotal, MarksClass, StudentCourse, days_of_week, time_slots, Marks
+from info.models import User, Department, Course, Class, Teacher, Assign, AssignTime, Student, AttendanceClass, Attendance, AttendanceTotal, MarksClass, StudentCourse, days_of_week, time_slots, Marks, AttendanceRange
 from django.contrib import messages
 from info.forms import AdminForm, DepartmentForm, CourseForm, ClassForm, TeacherForm, StudentForm
+from info.forms import DepartmentClassFormset, ClassStudentFormset, AssignTimeFormset, StudentCourseMarksFormset
 from allauth.account.models import EmailAddress
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.http import HttpResponseRedirect
+from django.views.generic.detail import SingleObjectMixin
+from datetime import datetime
+from info.admin import dateRange, days
 
 # Index View
 class IndexView(TemplateView):
@@ -120,6 +124,8 @@ class ManageData(LoginRequiredMixin, TemplateView):
         context['teacher_list'] = Teacher.objects.all()
         context['assign_list'] = Assign.objects.all()
         context['assign_time_list'] = AssignTime.objects.all()
+        context['marks_list'] = StudentCourse.objects.all()
+        context['attendance_range_list'] = AttendanceRange.objects.all()
         return context
 
 # Create Department
@@ -242,7 +248,7 @@ class CreateClass(LoginRequiredMixin, SuccessMessageMixin, CreateView):
             return redirect('info:unauthorize_view')
         return super().get(request, *args, **kwargs)
     
-# Update Course
+# Update Class
 class UpdateClass(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Class
     fields = ['department', 'section', 'semester']
@@ -537,6 +543,43 @@ class DeleteStudent(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         student.delete()
         messages.success(request, "Student was successfully deleted.")
         return redirect(self.success_url)
+
+class AttendanceRangeView(LoginRequiredMixin, TemplateView):
+    template_name = 'info/admin/attendance_range.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            context = self.get_context_data(**kwargs)
+            return self.render_to_response(context)
+        return redirect('info:unauthorize_view')
+
+    def post(self, request, *args, **kwargs):
+        start_date = datetime.strptime(request.POST['start_date'], '%Y-%m-%d').date()
+        end_date = datetime.strptime(request.POST['end_date'], '%Y-%m-%d').date()
+        
+        try:
+            attendance = AttendanceRange.objects.all()[:1].get()
+            attendance.start_date = start_date
+            attendance.end_date = end_date
+            attendance.save()
+        except AttendanceRange.DoesNotExist:
+            attendance = AttendanceRange(start_date=start_date, end_date=end_date)
+            attendance.save()
+
+        Attendance.objects.all().delete()
+        AttendanceClass.objects.all().delete()
+
+        for assign_time in AssignTime.objects.all():
+            for single_date in dateRange(start_date, end_date):
+                if single_date.isoweekday() == days[assign_time.day]:
+                    try:
+                        AttendanceClass.objects.get(date=single_date.strftime("%Y-%m-%d"), assign=assign_time.assign)
+                    except AttendanceClass.DoesNotExist:
+                        attendance = AttendanceClass.objects.create(date=single_date.strftime("%Y-%m-%d"), assign=assign_time.assign)
+                        attendance.save()
+        
+        messages.success(request, "Attendance Dates Reset Successfully.")
+        return redirect('info:manage_data_nav')
 
 # ================== Teacher Views ================== #
 
@@ -1061,3 +1104,179 @@ class StudentTimetable(LoginRequiredMixin, TemplateView):
             context['class_matrix'] = class_matrix
             return self.render_to_response(context)
         return redirect('info:unauthorize_view')
+
+# ================== Inline Formset Views for Admin ================== #
+
+# Department Details
+class DepartmentDetail(LoginRequiredMixin, DetailView):
+    model = Department
+    template_name = 'info/admin/department_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_superuser:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+
+# Edit Classes for Department
+class DepartmentClassEditView(LoginRequiredMixin, SingleObjectMixin, FormView):
+    model = Department
+    template_name = 'info/admin/department_class_edit.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=Department.objects.all())
+        if not request.user.is_superuser:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=Department.objects.all())
+        return super().post(request, *args, **kwargs)
+
+    def get_form(self, form_class = None):
+        return DepartmentClassFormset(**self.get_form_kwargs(), instance=self.object)
+    
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Changes were saved for Classes.')
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('info:department_detail', kwargs={'pk': self.object.pk})
+    
+# Class Details
+class ClassDetail(LoginRequiredMixin, DetailView):
+    model = Class
+    template_name = 'info/admin/class_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_superuser:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+    
+# Edit Students for Class
+class ClassStudentEditView(LoginRequiredMixin, SingleObjectMixin, FormView):
+    model = Class
+    template_name = 'info/admin/class_student_edit.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=Class.objects.all())
+        if not request.user.is_superuser:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=Class.objects.all())
+        return super().post(request, *args, **kwargs)
+
+    def get_form(self, form_class = None):
+        return ClassStudentFormset(**self.get_form_kwargs(), instance=self.object)
+    
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Changes were saved for Students.')
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('info:class_detail', kwargs={'pk': self.object.pk})
+    
+# Assign Details
+class AssignDetail(LoginRequiredMixin, DetailView):
+    model = Assign
+    template_name = 'info/admin/assign_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_superuser:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+    
+# Edit AssignTime for Assign
+class AssignTimeEditView(LoginRequiredMixin, SingleObjectMixin, FormView):
+    model = Assign
+    template_name = 'info/admin/assign_time_edit.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=Assign.objects.all())
+        if not request.user.is_superuser:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=Assign.objects.all())
+        return super().post(request, *args, **kwargs)
+
+    def get_form(self, form_class = None):
+        return AssignTimeFormset(**self.get_form_kwargs(), instance=self.object)
+    
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Changes were saved for Students.')
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('info:assign_detail', kwargs={'pk': self.object.pk})
+    
+# Student Course Details
+class StudentCourseDetail(LoginRequiredMixin, DetailView):
+    model = StudentCourse
+    template_name = 'info/admin/student_course_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_superuser:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+    
+# Edit Marks for Student Course
+class StudentCourseMarksEditView(LoginRequiredMixin, SingleObjectMixin, FormView):
+    model = StudentCourse
+    template_name = 'info/admin/student_course_marks_edit.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=StudentCourse.objects.all())
+        if not request.user.is_superuser:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=StudentCourse.objects.all())
+        return super().post(request, *args, **kwargs)
+
+    def get_form(self, form_class = None):
+        return StudentCourseMarksFormset(**self.get_form_kwargs(), instance=self.object)
+    
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Changes were saved for Marks.')
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('info:student_course_detail', kwargs={'pk': self.object.pk})
+    
+# Marks Update View
+class UpdateMarks(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Marks
+    fields = ['name', 'marks1']
+    template_name = 'info/admin/marks_form.html'
+    success_message = "Marks was successfully updated."
+    context_object_name = 'marks'
+    pk_url_kwarg = 'pk'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_superuser:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+
+     # Add your context data
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super(UpdateMarks, self).get_context_data(**kwargs)
+        # Create any data and add it to the context
+        context['form_type'] = 'Update'
+        return context
+    
+    def get_success_url(self):
+        return reverse('info:student_course_detail', kwargs={'pk': self.object.student_course.pk})

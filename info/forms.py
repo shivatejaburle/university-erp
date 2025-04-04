@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import ModelForm
-from info.models import User, Department, Course, Class, Teacher, Student
+from info.models import User, Department, Course, Class, Teacher, Student, Assign, AssignTime, StudentCourse, Marks
+from django.forms.models import inlineformset_factory
 
 class AdminForm(ModelForm):
     confirm_password = forms.CharField(widget=forms.PasswordInput)
@@ -67,3 +68,24 @@ class StudentForm(ModelForm):
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
         }
 
+# ================== Formset ================== #
+
+# Department and Class Formset
+DepartmentClassFormset = inlineformset_factory(
+    Department, Class, fields=('id', 'section', 'semester')
+)
+
+# Class and Student Formset
+ClassStudentFormset = inlineformset_factory(
+    Class, Student, fields=('roll_number', 'name', 'gender', 'date_of_birth')
+)
+
+# Assign and AssignTime Formset
+AssignTimeFormset = inlineformset_factory(
+    Assign, AssignTime, fields=('period', 'day')
+)
+
+# StudentCourse and Marks Formset
+StudentCourseMarksFormset = inlineformset_factory(
+    StudentCourse, Marks, fields=('name', 'marks1')
+)

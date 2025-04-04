@@ -1,0 +1,54 @@
+{% extends 'base_master.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>{{class}} : Students</h1>
+        <hr>
+        <div class="table-responsive mt-3">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Roll Number</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Date of Birth</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in class.student_set.all  %}
+                    <tr>
+                        <td class="align-middle">{{student.roll_number}}</td>
+                        <td class="align-middle">{{student.name}}</td>
+                        <td class="align-middle">{{student.gender}}</td>
+                        <td class="align-middle">{{student.date_of_birth}}</td>
+                        <td>
+                            <a href="{% url 'info:student_update' student.roll_number %}" class="btn btn-primary btn-sm">Edit</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">
+                            <div class="alert alert-info mt-3" role="alert">
+                                No Students found.
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}   
+                </tbody>
+            </table>
+        </div>
+        <p>
+            <a href="{% url 'info:class_student_edit' class.id %}" class="btn btn-warning">
+                
+                {% if class.student_set.all|length == 0 %}
+                    Add Student
+                {% else %}
+                    Edit all Students
+                {% endif %}
+            </a>
+            <a href="{% url 'info:manage_data_nav' %}" class="btn btn-secondary">Back</a>
+        </p>    
+    </div>
+{% endblock content %}
+    
