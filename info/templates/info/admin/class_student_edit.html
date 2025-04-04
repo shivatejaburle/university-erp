@@ -3,7 +3,7 @@
 
 {% block content %}
     <div class="container">
-        <h1>Edit Classes for {{form.forms.0.instance.class.id}}</h1>
+        <h1>{{class}} : Students</h1>
         <form action="" method="post" enctype="multipart/form-data">
             {% for hidden_field in form.hidden_fields %}
                 {{ hidden_field.errors }}

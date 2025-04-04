@@ -2,7 +2,13 @@
 
 {% block content %}
     <div class="container">
-        <h1>Report for {{student_course_list.0.course}}</h1>
+        <h1>
+            {% if student_course_list.0.course %}
+                Report for {{student_course_list.0.course}}
+            {% else %}
+                Reports
+            {% endif %}
+        </h1>
         <div class="table-responsive mt-3">
             <table class="table table-hover">
                 <thead>
@@ -32,10 +38,12 @@
                         {% endif %}
                     </tr>
                     {% empty %}
-                        <tr colspan="8">
-                            <div class="alert alert-info mt-3" role="alert">
-                                Students has no Courses.
-                            </div>
+                        <tr class="align-middle">
+                            <td colspan="4">
+                                <div class="alert alert-info mt-3" role="alert">
+                                    Students has no Courses.
+                                </div>
+                            </td>
                         </tr>
                     {% endfor %}   
                 </tbody>

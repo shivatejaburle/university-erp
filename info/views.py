@@ -606,7 +606,7 @@ class TeacherClassDatesView(LoginRequiredMixin, TemplateView):
             now = timezone.now()
             assign_id = kwargs['assign_id']
             assign = get_object_or_404(Assign, id=assign_id)
-            attendance_list = assign.attendanceclass_set.filter(date__lte=now).order_by('date')
+            attendance_list = assign.attendanceclass_set.filter(date__lte=now).order_by('-date')
             context['attendance_list'] = attendance_list
             return self.render_to_response(context)
         return redirect('info:unauthorize_view')

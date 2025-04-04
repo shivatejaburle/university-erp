@@ -3,7 +3,13 @@
 
 {% block content %}
     <div class="container">
-        <h1>Edit Classes for {{form.forms.0.instance.department.id}}</h1>
+        <h1>
+            {% if form.forms.0.instance.department.id %}
+                Edit Classes for {{form.forms.0.instance.department.id}}
+            {% else %}
+                Add Classes for {{department.name}}
+            {% endif %}
+        </h1>
         <form action="" method="post" enctype="multipart/form-data">
             {% for hidden_field in form.hidden_fields %}
                 {{ hidden_field.errors }}
@@ -20,7 +26,7 @@
                 <div class="col-md-6 border p-3">
                     <h5>
                         {% if class_form.instance.id %}
-                            Class : {{class_form.instance.id}}
+                            Class ID : {{class_form.instance.id}}
                         {% else %}
                             {% if form.forms|length > 1 %}
                                 Add another class

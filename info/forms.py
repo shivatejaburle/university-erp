@@ -72,12 +72,12 @@ class StudentForm(ModelForm):
 
 # Department and Class Formset
 DepartmentClassFormset = inlineformset_factory(
-    Department, Class, fields=('id', 'section', 'semester')
+    Department, Class, fields=('section', 'semester')
 )
 
 # Class and Student Formset
 ClassStudentFormset = inlineformset_factory(
-    Class, Student, fields=('roll_number', 'name', 'gender', 'date_of_birth')
+    Class, Student, fields=('name', 'gender', 'date_of_birth')
 )
 
 # Assign and AssignTime Formset
