@@ -31,8 +31,7 @@ cd university-erp
 ### Setup your Virtual Environment
 ```bash
 pip install virtualenv
-virtualenv ve
-nv
+virtualenv venv
 # For Windows
 venv\Scripts\activate   
 # For Mac
@@ -67,8 +66,7 @@ Your application will be available @ http://127.0.0.1:8000/
     - Password : aditi_1990
 - **Student**: 
     - Username : neha_001
-    - Password : neh
-    a_1990
+    - Password : neha_1990
 
 ## Screenshots
 ### Home Page
@@ -96,7 +94,7 @@ Your application will be available @ http://127.0.0.1:8000/
 ![Marks](screenshots/S4-Marks.jpg)
 ![Timetable](screenshots/S5-Timetable.jpg)
 ### Mobile Pages
-&emsp;![Home Page](screenshots/M1-Home-Page.png)&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;![Admin Dashboard](screenshots/M2-Login.png)
+&emsp;![Home Page](screenshots/M1-Home-Page.png)&emsp;![Admin Dashboard](screenshots/M2-Login.png)
 
 &emsp;![Admin Dashboard](screenshots/M3-Admin-Dashboard.png)&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;![Manage Data](screenshots/M4-Manage-Data.png)
 
