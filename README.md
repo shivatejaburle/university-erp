@@ -94,10 +94,10 @@ Your application will be available @ http://127.0.0.1:8000/
 ![Marks](screenshots/S4-Marks.jpg)
 ![Timetable](screenshots/S5-Timetable.jpg)
 ### Mobile Pages
-&emsp;![Home Page](screenshots/M1-Home-Page.png)&emsp;![Admin Dashboard](screenshots/M2-Login.png)
+&emsp;![Home Page](screenshots/M1-Home-Page.png)&emsp;&emsp;&emsp;![Admin Dashboard](screenshots/M2-Login.png)
 
-&emsp;![Admin Dashboard](screenshots/M3-Admin-Dashboard.png)&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;![Manage Data](screenshots/M4-Manage-Data.png)
+&emsp;![Admin Dashboard](screenshots/M3-Admin-Dashboard.png)&emsp;&emsp;&emsp;![Manage Data](screenshots/M4-Manage-Data.png)
 
-&emsp;![Enter Marks](screenshots/M5-Enter-Marks.png)&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;![Timetable](screenshots/M6-Timetable.png)
+&emsp;![Enter Marks](screenshots/M5-Enter-Marks.png)&emsp;&emsp;&emsp;![Timetable](screenshots/M6-Timetable.png)
 
 **Note:** All pages are responsive with small, medium and large devices.
