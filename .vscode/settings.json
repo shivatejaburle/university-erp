@@ -1,14 +1,20 @@
 {
     "cSpell.ignoreWords": [
         "UERPS",
+        "aditi",
         "allauth",
         "attendanceclass",
+        "collectstatic",
         "endcomment",
         "endfor",
         "forloop",
         "lika",
+        "neha",
         "newwindow",
         "onclick",
-        "studentcourse"
+        "runserver",
+        "studentcourse",
+        "venv",
+        "virtualenv"
     ]
 }
