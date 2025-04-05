@@ -77,7 +77,18 @@
       </ul>
 
       <ul class="navbar-nav mb-2 mb-sm-0">
-        <li class="nav-item dropdown">
+        <li class="nav-item">
+          <a class="nav-link text-capitalize">
+            {% if request.user.is_teacher %}
+              {{request.user.teacher.name}}
+            {% elif request.user.is_student %}
+              {{request.user.student.name}}
+            {% else %}
+              {{request.user.username}}
+            {% endif %}
+          </a>
+        </li>
+        <li class="nav-item">
           {% if request.user.is_authenticated %}
             <a class="btn btn-danger m-1" href="{% url 'account_logout' %}">Logout</a>
           {% else %}
