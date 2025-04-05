@@ -93,7 +93,7 @@ Your application will be available @ http://127.0.0.1:8000/
 ![Attendance Details](screenshots/S3-Attendance-Details.jpg)
 ![Marks](screenshots/S4-Marks.jpg)
 ![Timetable](screenshots/S5-Timetable.jpg)
-### Mobile Pages
+### Mobile View
 &emsp;![Home Page](screenshots/M1-Home-Page.png)&emsp;&emsp;&emsp;![Admin Dashboard](screenshots/M2-Login.png)
 
 &emsp;![Admin Dashboard](screenshots/M3-Admin-Dashboard.png)&emsp;&emsp;&emsp;![Manage Data](screenshots/M4-Manage-Data.png)
