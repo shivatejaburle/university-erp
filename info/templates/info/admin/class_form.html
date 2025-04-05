@@ -1,0 +1,29 @@
+{% extends 'base_master.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+    <div class="container mt-3">
+        
+        {% if form_type == 'Update' %}
+            <h1>Update a Class</h1>
+        {% else %}
+            <h1>Create a New Class</h1>
+        {% endif %}
+        <hr>
+
+        <form class="mb-3" action="" method="post">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+
+            <button type="submit" class="btn btn-primary">
+                {% if form_type == 'Update' %}
+                    Update Class
+                {% else %}
+                    Create Class
+                {% endif %}
+           </button>
+            <button type="button" class="btn btn-danger" 
+                onclick="window.location='{% url 'info:manage_data_nav' %}'">Cancel</button>
+        </form>
+    </div>
+{% endblock content %}

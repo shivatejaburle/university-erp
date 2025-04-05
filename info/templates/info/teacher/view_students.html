@@ -1,0 +1,50 @@
+{% extends 'base_master.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>Students Attendance</h1>
+        <div class="table-responsive mt-3">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Roll Number</th>
+                        <th scope="col">Student Name</th>
+                        <th scope="col">Classes Attended</th>
+                        <th scope="col">Total Classes</th>
+                        <th scope="col">Attendance %</th>
+                        <th scope="col">Classes to Attend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for obj in attendance_list %}
+                    <tr>
+                        <td class="align-middle">{{obj.student.roll_number}}</td>
+                        <td class="align-middle">
+                            <a href="{% url 'info:attendance_detail_view' obj.student.roll_number obj.course_id %}" class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+                                {{obj.student.name}}
+                            </a>
+                        </td>
+                        <td class="align-middle">{{obj.attendance_class}}</td>
+                        <td class="align-middle">{{obj.total_class}}</td>
+                        {% if obj.attendance > 75 %}
+                            <td class="align-middle text-success">{{obj.attendance}} %</td>
+                        {% else %}
+                            <td class="align-middle text-danger">{{obj.attendance}} %</td>
+                        {% endif %}
+                        <td class="align-middle">{{obj.classes_to_attend}}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="alert alert-info mt-3" role="alert">
+                                No Students.
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}
+    

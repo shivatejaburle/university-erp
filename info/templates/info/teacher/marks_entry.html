@@ -1,0 +1,41 @@
+{% extends 'base_master.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>Marks in {{ marks_class.assign.course.short_name }}</h1>
+        
+        {% if class.student_set.all %}
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="table-responsive mt-3">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Student Name</th>
+                                <th scope="col">Total Marks</th>
+                                <th scope="col">Marks Gained</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in class.student_set.all %}
+                            <tr>
+                                <td class="align-middle">{{student.name}}</td>
+                                <td class="align-middle">{{marks_class.total_marks}}</td>
+                                <td class="align-middle">
+                                    <input class="form-control" type="number" name="{{student.roll_number}}" id="{{student.roll_number}}" min="0" max="{{marks_class.total_marks}}" value="0" title="Enter marks for {{student.name}}" placeholder="Marks out of {{marks_class.total_marks}}">
+                                </td>
+                            </tr>
+                            {% endfor %}   
+                        </tbody>
+                    </table>
+                    <button type="submit" class="btn btn-primary">Submit Marks</button>
+                </div>
+            </form>
+        {% else %} 
+            <div class="alert alert-info mt-3" role="alert">
+                There are no Students in the Class.
+            </div>         
+        {% endif %}
+    </div>
+{% endblock content %}
+    

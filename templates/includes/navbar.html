@@ -1,0 +1,101 @@
+{% load static %}
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark" aria-label="University Navbar">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">
+      <img src="{% static 'info/img/univ-logo.png' %}" alt="Logo" width="30" class="d-inline-block align-text-top">
+      {% if request.user.is_authenticated  %}
+        {% if request.user.is_student %}
+          Student Dashboard
+        {% elif request.user.is_teacher %}
+          Teacher Dashboard
+        {% else %}
+          Admin Dashboard
+        {% endif %}
+      {% else %}
+        University
+      {% endif %}
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbar">
+      <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+        {% if request.user.is_authenticated  %}
+          <!-- Student Dashboard -->
+          {% if request.user.is_student %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'info:student_view' %}">Home</a>            
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:student_attendance' request.user.student.roll_number %}">Attendance</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:student_marks' request.user.student.roll_number %}">Marks</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:student_timetable' request.user.student.class_id_id %}">Timetable</a>
+            </li>
+          <!-- Teacher Dashboard -->
+          {% elif request.user.is_teacher %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'info:teacher_view' %}">Home</a>            
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:teacher_class_view' %}">Attendance</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:teacher_view_marks' %}">Marks</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:teacher_timetable' request.user.teacher.teacher_id %}">Timetable</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:teacher_report_classes' %}">Reports</a>
+            </li>
+          <!-- Admin Dashboard -->
+          {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'info:admin_view' %}">Home</a>            
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:teacher_create' %}">Add Teacher</a>            
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:student_create' %}">Add Student</a>            
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:create_admin_user' %}">Add Admin</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:manage_data_nav' %}">Manage Data</a>            
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin" target="_blank">Django Administration</a>
+            </li>
+          {% endif %}
+        {% endif %}
+      </ul>
+
+      <ul class="navbar-nav mb-2 mb-sm-0">
+        <li class="nav-item">
+          <a class="nav-link text-capitalize">
+            {% if request.user.is_teacher %}
+              {{request.user.teacher.name}}
+            {% elif request.user.is_student %}
+              {{request.user.student.name}}
+            {% else %}
+              {{request.user.username}}
+            {% endif %}
+          </a>
+        </li>
+        <li class="nav-item">
+          {% if request.user.is_authenticated %}
+            <a class="btn btn-danger m-1" href="{% url 'account_logout' %}">Logout</a>
+          {% else %}
+            <a class="btn btn-outline-light m-1" href="{% url 'account_login' %}">Login</a>
+          {% endif %}
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

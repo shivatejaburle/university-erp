@@ -1,0 +1,45 @@
+{% extends 'base_master.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row d-sm-block d-md-none">
+        <div class="text-center">
+            <h1 class="mb-4">Welcome {{request.user.student.name}}</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col d-none d-md-block">
+            <div class="text-center">
+                <h1 class="mt-3">Welcome {{request.user.student.name}}</h1>
+                <img src="{% static 'info/img/univ-logo.png' %}" alt="univ-logo" class="img-fluid">
+                <p class="lead">University Enterprise Resource Planning System</p>
+            </div>
+        </div>
+        <div class="col-md-12 col-lg-6">
+            <div class="row">
+                <div class="col-6 col-md-4 col-lg-4 text-center m-sm-0 m-lg-3">
+                    <h2 class="text-secondary">Attendance</h2>
+                    <a href="{% url 'info:student_attendance' request.user.student.roll_number %}">
+                        <img src="{% static 'info/img/attendance.png' %}" alt="teacher" class="img-fluid img-thumbnail">
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 col-lg-4 text-center m-sm-0 m-lg-3">
+                    <h2 class="text-secondary">Marks</h2>
+                    <a href="{% url 'info:student_marks' request.user.student.roll_number %}">
+                        <img src="{% static 'info/img/marks.png' %}" alt="student" class="img-fluid img-thumbnail">
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 col-lg-4 text-center m-sm-0 m-lg-3">
+                    <h2 class="text-secondary">Timetable</h2>
+                    <a href="{% url 'info:student_timetable' request.user.student.class_id_id %}">
+                        <img src="{% static 'info/img/timetable.png' %}" alt="admin" class="img-fluid img-thumbnail">
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 col-lg-4 text-center m-sm-0 m-lg-3">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'account/base_entrance.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %}
+    University Login
+{% endblock title %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row align-items-center">
+            <div class="col">
+                <div class="text-center">
+                    <a href="/">
+                        <img src="{% static 'info/img/univ-logo.png' %}" alt="univ-logo" class="img-fluid">
+                    </a>
+                </div>
+            </div>
+            <div class="col-sm-6 border p-5 bg-light">
+                <h1 class="text-center">University Portal Login</h1>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

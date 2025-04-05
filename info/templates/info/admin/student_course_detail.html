@@ -1,0 +1,50 @@
+{% extends 'base_master.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>{{studentcourse}}</h1>
+        <hr>
+        <div class="table-responsive mt-3">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Marks</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student_marks in studentcourse.marks_set.all  %}
+                    <tr>
+                        <td class="align-middle">{{student_marks.name}}</td>
+                        <td class="align-middle">{{student_marks.marks1}}</td>
+                        <td>
+                            <a href="{% url 'info:update_marks' student_marks.id %}" class="btn btn-primary btn-sm">Edit</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">
+                            <div class="alert alert-info mt-3" role="alert">
+                                No Marks found.
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}   
+                </tbody>
+            </table>
+        </div>
+        <p>
+            <a href="{% url 'info:student_course_marks_edit' studentcourse.id %}" class="btn btn-warning">
+                
+                {% if studentcourse.marks_set.all|length == 0 %}
+                    Add Marks
+                {% else %}
+                    Edit all Marks
+                {% endif %}
+            </a>
+            <a href="{% url 'info:manage_data_nav' %}" class="btn btn-secondary">Back</a>
+        </p>    
+    </div>
+{% endblock content %}
+    

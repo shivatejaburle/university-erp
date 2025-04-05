@@ -1,0 +1,48 @@
+{% extends 'base_master.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+    <div class="container">
+        <h1>{{class}} : Students</h1>
+        <form action="" method="post" enctype="multipart/form-data">
+            {% for hidden_field in form.hidden_fields %}
+                {{ hidden_field.errors }}
+                {{ hidden_field }}
+            {% endfor %}
+
+            {% csrf_token %}
+
+            {{ form.management_form }}
+            {{ form.non_form_errors }}
+
+            <div class="row">
+                {% for student_form in form.forms %}
+                <div class="col-md-6 border p-3">
+                    <h5>
+                        {% if student_form.instance.roll_number %}
+                            Roll Number : {{student_form.instance.roll_number}}
+                        {% else %}
+                            {% if form.forms|length > 1 %}
+                                Add another student
+                            {% else %}
+                                Add a student
+                            {% endif %}
+                        {% endif %}
+                    </h5>
+                    {% for hidden_field in book_form.hidden_fields %}
+                        {{ hidden_field.errors }}
+                    {% endfor %}
+                    <table class="table">
+                        {% bootstrap_form student_form layout='horizontal' %}
+                    </table>
+                </div>
+            {% endfor %}
+            </div>
+            <p class="mt-3">
+                <button type="submit" class="btn btn-primary" value="Update">Update</button>
+                <a href="{{class.get_absolute_url}}" class="btn btn-secondary">Cancel</a>
+            </p>
+        </form>
+    </div>
+{% endblock content %}
+    

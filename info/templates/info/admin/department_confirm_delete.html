@@ -1,0 +1,31 @@
+{% extends 'base_master.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+    <div class="container">
+        <h1>Delete Department</h1>
+        <hr>
+        <form action="" method="post">
+            {% csrf_token %}
+            <p>Are you sure you want to delete the department <span class="text-danger">"{{ department.name }}"</span>?</p>
+            <div class="table-responsive mt-3">
+                <table class="table table-danger">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{department.id}}</td>
+                            <td>{{department.name}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <button type="button" class="btn btn-primary" onclick="window.location='{% url 'info:manage_data_nav' %}'">Cancel</button>
+        </form>
+    </div>
+{% endblock content %}

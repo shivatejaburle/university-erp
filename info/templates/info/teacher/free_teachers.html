@@ -1,0 +1,18 @@
+{% extends 'base_master.html' %}
+
+{% block header %}
+    <h2 class="text-center mt-3">List of Free Teachers</h2>
+{% endblock header %}
+
+{% block content %}
+    <div class="container">
+        <ul class="list-group">
+            {% for teacher in free_teachers_list %}
+                <li class="list-group-item list-group-item-success">{{teacher}}</li>
+            {% empty %}
+                <li class="list-group-item list-group-item-warning text-center">No free teachers available</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock content %}
+    

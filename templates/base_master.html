@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            {% block title %}University ERP System{% endblock %}
+        </title>
+        {% load static %}
+        <link rel="shortcut icon" href="{% static 'info/img/favicon.ico' %}" type="image/x-icon">
+        <!-- Bootstrap -->
+        {% load django_bootstrap5 %}
+        
+        <!-- Bootstrap CSS -->
+        {% bootstrap_css %}
+
+        <!-- Custom CSS -->
+        {% block custom_css %}
+            
+        {% endblock custom_css %}
+    </head>
+    <body>
+        <!-- Header -->
+        <header>
+            {% block header %}
+                <!-- Navbar -->
+                {% include 'includes/navbar.html' %}
+            {% endblock header %}
+        </header>
+        
+        <!-- Messages -->
+        <div class="container mt-3">
+            {% bootstrap_messages %}
+        </div>
+
+        <!-- Content -->
+        {% block content %}
+            
+        {% endblock content %}
+        
+        <!-- Bootstrap JS -->
+        {% bootstrap_javascript %}
+
+        {% if messages %}
+            <!-- To close alert messages automatically -->
+            <script>
+                // Get the alert message by css class name 'alert'
+                var alert_messages = document.getElementsByClassName("alert-dismissible");
+    
+                // Remove the alert box after 10 seconds
+                setTimeout(function() {
+                    for (let i = 0; i < alert_messages.length; i++) {
+                        alert_messages[i].remove();
+                    }
+                }, 10000);
+            </script>
+        {% endif %}
+    </body>
+</html>

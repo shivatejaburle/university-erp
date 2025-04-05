@@ -1,0 +1,48 @@
+{% extends 'base_master.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row d-sm-block d-md-none">
+        <div class="text-center">
+            <h1 class="mb-4">Welcome {{request.user}}</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col d-none d-md-block">
+            <div class="text-center">
+                <h1 class="mt-3">Welcome {{request.user}}</h1>
+                <img src="{% static 'info/img/univ-logo.png' %}" alt="univ-logo" class="img-fluid">
+                <p class="lead">University Enterprise Resource Planning System</p>
+            </div>
+        </div>
+        <div class="col-md-12 col-lg-6">
+            <div class="row">
+                <div class="col-6 col-md-4 col-lg-4 text-center m-sm-0 m-lg-3">
+                    <h2 class="text-secondary">Add Teacher</h2>
+                    <a href="{% url 'info:teacher_create' %}">
+                        <img src="{% static 'info/img/teacher.png' %}" alt="teacher" class="img-fluid img-thumbnail">
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 col-lg-4 text-center m-sm-0 m-lg-3">
+                    <h2 class="text-secondary">Add Student</h2>
+                    <a href="{% url 'info:student_create' %}">
+                        <img src="{% static 'info/img/student.png' %}" alt="student" class="img-fluid img-thumbnail">
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 col-lg-4 text-center m-sm-0 m-lg-3">
+                    <h2 class="text-secondary">Add Admin</h2>
+                    <a href="{% url 'info:create_admin_user' %}">
+                        <img src="{% static 'info/img/admin.png' %}" alt="admin" class="img-fluid img-thumbnail">
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 col-lg-4 text-center m-sm-0 m-lg-3">
+                    <h2 class="text-secondary">Manage Data</h2>
+                    <a href="{% url 'info:manage_data_nav' %}">
+                        <img src="{% static 'info/img/univ_data.png' %}" alt="University Data" class="img-fluid img-thumbnail">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

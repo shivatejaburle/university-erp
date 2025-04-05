@@ -1,0 +1,68 @@
+{% extends 'base_master.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+    <div class="container mt-3">
+        <h1>Reset Attendance</h1>
+        <hr>
+        <form method="POST" action="" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="start_date" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="start_date" name="start_date" required>
+                        <div class="invalid-feedback">
+                            Please select a valid start date.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="end_date" class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="end_date" name="end_date" required>
+                        <div class="invalid-feedback">
+                            Please select a valid end date.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="mb-3">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="iAgree" required>
+                          <label class="form-check-label fw-bold " for="iAgree">
+                            I agree to reset attendance records for the selected date range.
+                          </label>
+                          <div class="invalid-feedback" id="iAgreeFeedback">
+                            You must agree before submitting.
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-danger">Reset</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        (() => {
+            'use strict'
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+
+                form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+{% endblock content %}

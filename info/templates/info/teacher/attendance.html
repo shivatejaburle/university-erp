@@ -1,0 +1,46 @@
+{% extends 'base_master.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>Attendance</h1>
+        
+        {% if class.student_set.all %}
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="table-responsive mt-3">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Student Name</th>
+                                <th scope="col">Attendance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in class.student_set.all %}
+                            <tr>
+                                <td class="align-middle">{{student.name}}</td>
+                                <td class="align-middle">
+                                    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                        <input type="radio" class="btn-check" name="{{student.roll_number}}" id="{{student.roll_number}}-1" value="present" autocomplete="off" checked>
+                                        <label class="btn btn-outline-success" for="{{student.roll_number}}-1">Present</label>
+                                      
+                                        <input type="radio" class="btn-check" name="{{student.roll_number}}" id="{{student.roll_number}}-2" value="absent" autocomplete="off">
+                                        <label class="btn btn-outline-danger" for="{{student.roll_number}}-2">Absent</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}   
+                        </tbody>
+                    </table>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        {% else %}
+            <div class="alert alert-info mt-3" role="alert">
+                There are no Students in the Class.
+            </div>
+        {% endif %}
+
+    </div>
+{% endblock content %}
+    
