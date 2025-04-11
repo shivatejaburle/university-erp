@@ -933,23 +933,23 @@ class TeacherTimetable(LoginRequiredMixin, TemplateView):
             context = self.get_context_data(**kwargs)
             teacher_id = kwargs['teacher_id']
             assign_time = AssignTime.objects.filter(assign__teacher_id=teacher_id)
-            class_matrix = [[True for i in range(12)] for j in range(6)]
-            for i, d in enumerate(days_of_week):
+            class_matrix = [[True for period in range(12)] for day in range(6)]
+            for row, day in enumerate(days_of_week):
                 t = 0
-                for j in range(12):
-                    if j == 0:
-                        class_matrix[i][0] = d[0]
+                for col in range(12):
+                    if col == 0:
+                        class_matrix[row][0] = day[0]
                         continue
-                    if j == 4 or j == 8:
+                    if col == 4 or col == 8:
                         continue
                     try:
-                        a = assign_time.get(period=time_slots[t][0], day=d[0])
-                        class_matrix[i][j] = a
+                        a = assign_time.get(period=time_slots[t][0], day=day[0])
+                        class_matrix[row][col] = a
                     except AssignTime.DoesNotExist:
                         pass
                     t += 1
             
-            context['class_matrix'] = class_matrix
+            context['timetable'] = class_matrix
             return self.render_to_response(context)
         return redirect('info:unauthorize_view')
     
@@ -1085,23 +1085,23 @@ class StudentTimetable(LoginRequiredMixin, TemplateView):
             context = self.get_context_data(**kwargs)
             class_id = kwargs['class_id']
             assign_time = AssignTime.objects.filter(assign__class_id=class_id)
-            class_matrix = [['' for i in range(12)] for j in range(6)]
-            for i, d in enumerate(days_of_week):
+            class_matrix = [['' for period in range(12)] for day in range(6)]
+            for row, day in enumerate(days_of_week):
                 t = 0
-                for j in range(12):
-                    if j == 0:
-                        class_matrix[i][0] = d[0]
+                for col in range(12):
+                    if col == 0:
+                        class_matrix[row][0] = day[0]
                         continue
-                    if j == 4 or j == 8:
+                    if col == 4 or col == 8:
                         continue
                     try:
-                        a = assign_time.get(period=time_slots[t][0], day=d[0])
-                        class_matrix[i][j] = a.assign.course_id
+                        a = assign_time.get(period=time_slots[t][0], day=day[0])
+                        class_matrix[row][col] = a.assign.course_id
                     except AssignTime.DoesNotExist:
                         pass
                     t += 1
             
-            context['class_matrix'] = class_matrix
+            context['timetable'] = class_matrix
             return self.render_to_response(context)
         return redirect('info:unauthorize_view')
 
