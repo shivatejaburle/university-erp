@@ -5,6 +5,7 @@
         "allauth",
         "attendanceclass",
         "collectstatic",
+        "elif",
         "endcomment",
         "endfor",
         "forloop",

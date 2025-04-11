@@ -32,12 +32,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for i in class_matrix %}
+                    {% for day in timetable %}
                     <tr>
-                        {% for j in i %}
+                        {% for period in day %}
                             {% if forloop.counter == 1 %}
                                 <th class="table-primary border border-light align-middle" scope="row">
-                                    {{j}}
+                                    {{period}}
                                 </th>
                             {% elif forloop.counter == 5 %}
                                 <td class="table-info text-center border border-light align-middle">
@@ -47,16 +47,16 @@
                                 <td class="table-info text-center border border-light align-middle">
                                     <b>Lunch</b>
                                 </td>
-                            {% elif j == True %}
+                            {% elif period == True %}
                                 <td class="align-middle"></td>
                             {% else %}
                                 <td class="text-center">
-                                    <a href="{% url 'info:free_teachers' j.id %}" class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
-                                        onclick="window.open('{% url 'info:free_teachers' j.id %}',
+                                    <a href="{% url 'info:free_teachers' period.id %}" class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+                                        onclick="window.open('{% url 'info:free_teachers' period.id %}',
                                                          'newwindow',
                                                          'width=600,height=400');
                                                     return false;">
-                                        {{ j.assign.class_id_id }} {{ j.assign.course.shortname }}
+                                        {{ period.assign.class_id_id }} {{ period.assign.course.shortname }}
                                     </a>
                                 </td>
                             {% endif %}
