@@ -48,14 +48,17 @@
         {% endif %}
       </ul>
 
+      <hr class="text-light">
       <ul class="navbar-nav mb-2 mb-sm-0">
-        <li class="nav-item">
-          <a class="nav-link text-capitalize">
+        <li class="nav-item dropdown">
+          {% if request.user.is_authenticated %}            
+            <button class="btn btn-outline-light dropdown-toggle text-capitalize" type="button" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
               {{request.user.teacher.name}}
-          </a>
-        </li>
-        <li class="nav-item">
-          {% if request.user.is_authenticated %}
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'account_change_password' %}">Change Password</a></li>
+                <li><a class="dropdown-item" href="{% url 'account_email' %}">Change Email</a></li>
+            </ul>
             <a class="btn btn-danger m-1" href="{% url 'account_logout' %}">Logout</a>
           {% else %}
             <a class="btn btn-outline-light m-1" href="{% url 'account_login' %}">Login</a>
