@@ -6,6 +6,7 @@
         "assigntime",
         "attendanceclass",
         "collectstatic",
+        "dotenv",
         "elif",
         "endcomment",
         "endfor",
