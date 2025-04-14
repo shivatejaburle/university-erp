@@ -3,6 +3,8 @@ beautifulsoup4==4.12.3
 Django==5.1.5
 django-allauth==65.3.1
 django-bootstrap5==24.3
+python-dotenv==1.1.0
 soupsieve==2.6
 sqlparse==0.5.3
 tzdata==2025.1
+whitenoise==6.9.0
