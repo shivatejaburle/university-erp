@@ -72,6 +72,19 @@ pip install -r requirements.txt
 python manage.py collectstatic
 ```
 
+### Environment Settings
+
+Create `university-erp/.env` to store Email Configurations.
+
+```bash
+EMAIL_BACKEND = '<django.core.mail.backends.smtp.EmailBackend>'
+EMAIL_HOST = '<YOUR_SMTP_HOST>'
+EMAIL_PORT = <YOUR_PORT_NUMBER>
+EMAIL_USE_TLS = <True_OR_False>
+EMAIL_HOST_USER = '<YOUR_EMAIL_ADDRESS>'
+EMAIL_HOST_PASSWORD = '<YOUR_PASSWORD>'
+```
+
 ### Running a development server
 
 Just run this command:
@@ -84,12 +97,15 @@ Your application will be available @ http://127.0.0.1:8000/
 ### Login Information
 - **Admin**: 
     - Username : admin
+    - Email    : admin@university.edu
     - Password : Univ#12345
 - **HOD and Teacher**: 
     - Username : aditi_t001
-    - Password : aditi_1990
+    - Email    : aditi@university.edu 
+    - Password : aditi_12345
 - **Student**: 
     - Username : neha_001
+    - Email    : neha@university.edu
     - Password : neha_1990
 
 ## Screenshots
