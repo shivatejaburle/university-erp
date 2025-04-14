@@ -81,6 +81,7 @@ urlpatterns = [
     path('hod/manage_data/assign_time_slots/delete/<int:pk>', views.HodDeleteTimeSlots.as_view(), name = 'hod_assign_time_delete'),
     path('hod/manage_data/<str:roll_number>/attendance', views.HodStudentAttendanceView.as_view(), name = "hod_student_attendance"),
     path('hod/manage_data/<str:roll_number>/attendance/<str:course_id>/detail', views.HodStudentAttendanceDetailView.as_view(), name = "hod_student_attendance_detail"),
+    path('hod/<int:attendance_id>/change_attendance', views.HodChangeAttendance.as_view(), name = "hod_change_attendance"),
     path('hod/manage_data/<str:roll_number>/marks', views.HodStudentMarksListView.as_view(), name = "hod_student_marks"),
     path('hod/manage_date/<str:teacher_id>/courses', views.HodViewCoursesForTeacherView.as_view(), name = 'hod_teacher_courses'),
     path('hod/classes/reports', views.HodReportClassesView.as_view(), name = 'hod_report_classes'),

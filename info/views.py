@@ -1627,6 +1627,16 @@ class HodStudentAttendanceDetailView(LoginRequiredMixin, TemplateView):
             context['student'] = student
             return self.render_to_response(context)
         return redirect('info:unauthorize_view')
+    
+# Change Attendance
+class HodChangeAttendance(LoginRequiredMixin, RedirectView):
+    def get(self, request, *args, **kwargs):
+        attendance_id = kwargs['attendance_id']
+        attendance = get_object_or_404(Attendance, id=attendance_id)
+        attendance.status = not attendance.status
+        attendance.save()
+        return HttpResponseRedirect(reverse_lazy('info:hod_student_attendance_detail', kwargs={'roll_number': attendance.student.roll_number, 'course_id': attendance.course_id}))
+
 
 # Hod views Student Marks
 class HodStudentMarksListView(LoginRequiredMixin, TemplateView):
