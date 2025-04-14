@@ -1,0 +1,34 @@
+{% extends 'info/hod/index.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>List of Classes</h1>
+    <div class="table-responsive mt-3">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Semester</th>
+                    <th scope="col">Section</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for class in class_list %}
+                <tr>
+                    <td class="align-middle">{{class.id}}</td>
+                    <td class="align-middle">{{class.semester}}</td>
+                    <td class="align-middle">{{class.section}}</td>
+                    <td class="align-middle">
+                        <button type="button" class="btn btn-sm btn-primary m-1"
+                                onclick="window.location = '{% url 'info:hod_report_view' class.id %}'">
+                            Generate Report
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}   
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

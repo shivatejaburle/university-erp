@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import TemplateView, CreateView, UpdateView, DeleteView, RedirectView, FormView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from info.models import User, Department, Course, Class, Teacher, Assign, AssignTime, Student, AttendanceClass, Attendance, AttendanceTotal, MarksClass, StudentCourse, days_of_week, time_slots, Marks, AttendanceRange
+from info.models import User, Department, Course, Class, Teacher, Assign, AssignTime, Student, AttendanceClass, Attendance, AttendanceTotal, MarksClass, StudentCourse, days_of_week, time_slots, Marks, AttendanceRange, HOD
 from django.contrib import messages
-from info.forms import AdminForm, DepartmentForm, CourseForm, ClassForm, TeacherForm, StudentForm
+from info.forms import AdminForm, DepartmentForm, CourseForm, ClassForm, TeacherForm, StudentForm, HODForm
 from info.forms import DepartmentClassFormset, ClassStudentFormset, AssignTimeFormset, StudentCourseMarksFormset
 from allauth.account.models import EmailAddress
 from django.urls import reverse_lazy, reverse
@@ -63,6 +63,16 @@ class StudentView(LoginRequiredMixin, TemplateView):
     
     def get(self, request, *args, **kwargs):
         if request.user.is_student:
+            context = self.get_context_data(**kwargs)
+            return self.render_to_response(context)
+        return redirect('info:unauthorize_view')
+    
+# HOD Dashboard View
+class HODView(LoginRequiredMixin, TemplateView):
+    template_name = 'info/hod/index.html'
+    
+    def get(self, request, *args, **kwargs):
+        if request.user.is_hod:
             context = self.get_context_data(**kwargs)
             return self.render_to_response(context)
         return redirect('info:unauthorize_view')
@@ -126,6 +136,7 @@ class ManageData(LoginRequiredMixin, TemplateView):
         context['assign_time_list'] = AssignTime.objects.all()
         context['marks_list'] = StudentCourse.objects.all()
         context['attendance_range_list'] = AttendanceRange.objects.all()
+        context['hod_list'] = HOD.objects.all()
         return context
 
 # Create Department
@@ -207,7 +218,7 @@ class UpdateCourse(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     def get(self, request, *args, **kwargs):
         self.object = None
-        if not request.user.is_superuser:
+        if not (request.user.is_superuser or request.user.is_hod):
             return redirect('info:unauthorize_view')
         return super().get(request, *args, **kwargs)
 
@@ -343,6 +354,12 @@ class UpdateTeacher(LoginRequiredMixin,SuccessMessageMixin, UpdateView):
     context_object_name = 'teacher'
     pk_url_kwarg = 'pk'
 
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_superuser:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+
     # Add your context data
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get the context
@@ -371,6 +388,56 @@ class DeleteTeacher(LoginRequiredMixin, DeleteView):
         teacher = User.objects.get(username=self.object.user.username)
         teacher.delete()
         messages.success(request, "Teacher was successfully deleted.")
+        return redirect(self.success_url)
+
+# Assign HOD
+class AssignHOD(LoginRequiredMixin, CreateView):
+    model = HOD
+    form_class = HODForm
+    template_name = 'info/admin/hod_form.html'
+    success_url = reverse_lazy('info:manage_data_nav')
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_superuser:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        form = HODForm(request.POST)
+        if not form.is_valid():
+            context = {
+                'form':form
+            }
+            return render(request, self.template_name, context)
+        self.object = form.save(commit=True)
+        teacher = User.objects.get(username=self.object.name.user.username)
+        teacher.is_hod = True
+        teacher.save()
+        messages.success(request, "HOD was successfully assigned.")
+        return redirect(self.success_url)
+
+# Unassign HOD
+class UnassignHOD(LoginRequiredMixin, DeleteView):
+    model = HOD
+    template_name = 'info/admin/hod_confirm_delete.html'
+    success_url = reverse_lazy('info:manage_data_nav')
+    context_object_name = 'hod'
+    pk_url_kwarg = 'pk'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_superuser:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        teacher = User.objects.get(username=self.object.name.user.username)
+        teacher.is_hod = False
+        teacher.save()
+        self.object.delete()
+        messages.success(request, "HOD was successfully unassigned.")
         return redirect(self.success_url)
 
 # Assign Teacher to Class and Course
@@ -513,6 +580,12 @@ class UpdateStudent(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = "Student was successfully updated."
     context_object_name = 'student'
     pk_url_kwarg = 'pk'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_superuser:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
 
     # Add your context data
     def get_context_data(self, **kwargs):
@@ -958,7 +1031,7 @@ class FreeTeachers(LoginRequiredMixin, TemplateView):
     template_name = 'info/teacher/free_teachers.html'
 
     def get(self, request, *args, **kwargs):
-        if request.user.is_teacher:
+        if request.user.is_hod:
             context = self.get_context_data(**kwargs)
             assign_time_id = kwargs['assign_time_id']
             assign_time = get_object_or_404(AssignTime, id=assign_time_id)
@@ -1105,6 +1178,547 @@ class StudentTimetable(LoginRequiredMixin, TemplateView):
             return self.render_to_response(context)
         return redirect('info:unauthorize_view')
 
+# ================== HOD Views ================== #
+
+# Manage Department
+class ManageDepartment(LoginRequiredMixin, TemplateView):
+    template_name = 'info/hod/manage_dept.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_hod:
+            context = self.get_context_data(**kwargs)
+            return self.render_to_response(context)
+        return redirect('info:unauthorize_view')
+    
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super(ManageDepartment, self).get_context_data(**kwargs)
+        # Create any data and add it to the context
+        context['hod_list'] = HOD.objects.all()
+        context['course_list'] = Course.objects.filter(department_id=self.request.user.teacher.department_id)
+        context['class_list'] = Class.objects.filter(department_id=self.request.user.teacher.department_id)
+        context['teacher_list'] = Teacher.objects.filter(department_id=self.request.user.teacher.department_id)
+        context['assign_list'] = Assign.objects.filter(class_id__department=self.request.user.teacher.department_id)
+        context['assign_time_list'] = AssignTime.objects.filter(assign__class_id__department=self.request.user.teacher.department_id)
+        context['student_list'] = Student.objects.filter(class_id__department_id=self.request.user.teacher.department_id)
+        return context
+    
+# Courses in the Department
+class DepartmentCourses(LoginRequiredMixin, TemplateView):
+    template_name = 'info/hod/dept_courses.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_hod:
+            context = self.get_context_data(**kwargs)
+            return self.render_to_response(context)
+        return redirect('info:unauthorize_view')
+    
+    def get_context_data(self, **kwargs):
+        context = super(DepartmentCourses, self).get_context_data(**kwargs)
+        context['course_list'] = Course.objects.filter(department_id=self.request.user.teacher.department_id)
+        return context
+    
+# HOD Create Course
+class HodCreateCourse(LoginRequiredMixin, CreateView):
+    model = Course
+    fields = ['id', 'name', 'short_name']
+    template_name = 'info/hod/course_form.html'
+    success_url = reverse_lazy('info:department_courses')
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_hod:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        obj = request.POST
+        Course.objects.create(
+            id=obj['id'],
+            name=obj['name'], 
+            short_name=obj['short_name'], 
+            department_id=self.request.user.teacher.department_id
+        ).save()
+        messages.success(request, "Course was successfully created.")
+        return redirect(self.success_url)
+    
+# HOD Update Course
+class HodUpdateCourse(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Course
+    fields = ['name', 'short_name']
+    template_name = 'info/hod/course_form.html'
+    success_url = reverse_lazy('info:department_courses')
+    success_message = "Course was successfully updated."
+    context_object_name = 'course'
+    pk_url_kwarg = 'pk'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_hod:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+
+     # Add your context data
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super(HodUpdateCourse, self).get_context_data(**kwargs)
+        # Create any data and add it to the context
+        context['form_type'] = 'Update'
+        return context
+    
+# HOD Delete Course
+class HodDeleteCourse(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = Course
+    template_name = 'info/hod/course_confirm_delete.html'
+    success_url = reverse_lazy('info:department_courses')
+    success_message = "Course was successfully deleted."
+    context_object_name = 'course'
+    pk_url_kwarg = 'pk'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_hod:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+
+# Classes in the Department
+class DepartmentClasses(LoginRequiredMixin, TemplateView):
+    template_name = 'info/hod/dept_classes.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_hod:
+            context = self.get_context_data(**kwargs)
+            return self.render_to_response(context)
+        return redirect('info:unauthorize_view')
+    
+    def get_context_data(self, **kwargs):
+        context = super(DepartmentClasses, self).get_context_data(**kwargs)
+        context['class_list'] = Class.objects.filter(department_id=self.request.user.teacher.department_id)
+        return context
+
+# HOD Create Class
+class HodCreateClass(LoginRequiredMixin, CreateView):
+    model = Class
+    fields = ['id', 'section', 'semester']
+    template_name = 'info/hod/class_form.html'
+    success_url = reverse_lazy('info:department_classes')
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_hod:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        obj = request.POST
+        Class.objects.create(
+            id=obj['id'],
+            section=obj['section'], 
+            semester=obj['semester'], 
+            department_id=self.request.user.teacher.department_id
+        ).save()
+        messages.success(request, "Course was successfully created.")
+        return redirect(self.success_url)
+    
+# HOD Delete Class
+class HodDeleteClass(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = Class
+    template_name = 'info/hod/class_confirm_delete.html'
+    success_url = reverse_lazy('info:department_classes')
+    success_message = "Class was successfully deleted."
+    context_object_name = 'class'
+    pk_url_kwarg = 'pk'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_hod:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+    
+# HOD views Class Details
+class HodClassDetail(LoginRequiredMixin, DetailView):
+    model = Class
+    template_name = 'info/hod/class_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_hod:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+
+# Teachers in the Department
+class DepartmentTeachers(LoginRequiredMixin, TemplateView):
+    template_name = 'info/hod/dept_teachers.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_hod:
+            context = self.get_context_data(**kwargs)
+            return self.render_to_response(context)
+        return redirect('info:unauthorize_view')
+    
+    def get_context_data(self, **kwargs):
+        context = super(DepartmentTeachers, self).get_context_data(**kwargs)
+        context['teacher_list'] = Teacher.objects.filter(department_id=self.request.user.teacher.department_id)
+        return context
+
+# HOD Update Teacher
+class HodUpdateTeacher(LoginRequiredMixin,SuccessMessageMixin, UpdateView):
+    model = Teacher
+    fields = ['name', 'gender']
+    template_name = 'info/hod/teacher_form.html'
+    success_url = reverse_lazy('info:department_teachers')
+    success_message = "Teacher was successfully updated."
+    context_object_name = 'teacher'
+    pk_url_kwarg = 'pk'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_hod:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+
+    # Add your context data
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super(HodUpdateTeacher, self).get_context_data(**kwargs)
+        # Create any data and add it to the context
+        context['form_type'] = 'Update'
+        return context
+
+# Students in the Department
+class DepartmentStudents(LoginRequiredMixin, TemplateView):
+    template_name = 'info/hod/dept_students.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_hod:
+            context = self.get_context_data(**kwargs)
+            return self.render_to_response(context)
+        return redirect('info:unauthorize_view')
+    
+    def get_context_data(self, **kwargs):
+        context = super(DepartmentStudents, self).get_context_data(**kwargs)
+        context['student_list'] = Student.objects.filter(class_id__department_id=self.request.user.teacher.department_id)
+        return context
+
+# HOD Update Student
+class HodUpdateStudent(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Student
+    fields = ['name', 'gender', 'date_of_birth', 'class_id']
+    template_name = 'info/hod/student_form.html'
+    success_url = reverse_lazy('info:department_students')
+    success_message = "Student was successfully updated."
+    context_object_name = 'student'
+    pk_url_kwarg = 'pk'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_hod:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+
+    # Add your context data
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super(HodUpdateStudent, self).get_context_data(**kwargs)
+        # Create any data and add it to the context
+        context['form_type'] = 'Update'
+        return context
+    
+# HOD Assign Details
+class HodAssignDetail(LoginRequiredMixin, DetailView):
+    model = Assign
+    template_name = 'info/hod/assign_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_hod:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+    
+# Department Timetable
+class DepartmentTimetable(LoginRequiredMixin, TemplateView):
+    template_name = 'info/hod/timetable.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_hod:
+            context = self.get_context_data(**kwargs)
+            class_list = Class.objects.filter(department_id=self.request.user.teacher.department_id)
+            class_matrix = [[['' for period in range(12)] for day in range(6)] for c in range(len(class_list))]
+            class_names = []
+
+            for c, class_id in zip(range(len(class_list)), class_list):
+                name = "Sem '"+ str(class_id.semester) + "' Section '" + class_id.section + "'"
+                class_names.append(name)
+                assign_time = AssignTime.objects.filter(assign__class_id=class_id)
+                for row, day in enumerate(days_of_week):
+                    t = 0
+                    for col in range(12):
+                        if col == 0:
+                            class_matrix[c][row][0] = day[0]
+                            continue
+                        if col == 4 or col == 8:
+                            continue
+                        try:
+                            a = assign_time.get(period=time_slots[t][0], day=day[0])
+                            # class_matrix[c][row][col] = a.assign.course_id + "-" + a.assign.teacher.name
+                            class_matrix[c][row][col] = a.assign
+                        except AssignTime.DoesNotExist:
+                            pass
+                        t += 1
+            
+            context['timetable'] = class_matrix
+            context['class_names'] = class_names
+            return self.render_to_response(context)
+        return redirect('info:unauthorize_view')
+    
+# HOD views Teacher Timetable
+class TeacherTimetableView(LoginRequiredMixin, TemplateView):
+    template_name = 'info/hod/teacher_timetable.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_hod:
+            context = self.get_context_data(**kwargs)
+            teacher_id = kwargs['teacher_id']
+            assign_time = AssignTime.objects.filter(assign__teacher_id=teacher_id)
+            class_matrix = [[True for period in range(12)] for day in range(6)]
+            for row, day in enumerate(days_of_week):
+                t = 0
+                for col in range(12):
+                    if col == 0:
+                        class_matrix[row][0] = day[0]
+                        continue
+                    if col == 4 or col == 8:
+                        continue
+                    try:
+                        a = assign_time.get(period=time_slots[t][0], day=day[0])
+                        class_matrix[row][col] = a
+                    except AssignTime.DoesNotExist:
+                        pass
+                    t += 1
+            
+            context['timetable'] = class_matrix
+            context['teacher_name'] = Teacher.objects.get(teacher_id=teacher_id).name
+            return self.render_to_response(context)
+        return redirect('info:unauthorize_view')
+    
+# HOD Assign Teacher to Class and Course
+class HodCreateAssign(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = Assign
+    fields = ['teacher', 'class_id', 'course']
+    template_name = 'info/hod/assign_form.html'
+    success_url = reverse_lazy('info:manage_department')
+    success_message = "Teacher was successfully assigned to Class and Course."
+    context_object_name = 'assign'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_hod:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+
+# HOD Update Assign
+class HodUpdateAssign(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Assign
+    fields = ['teacher', 'class_id', 'course']
+    template_name = 'info/hod/assign_form.html'
+    success_url = reverse_lazy('info:manage_department')
+    success_message = "Teacher was successfully updated."
+    context_object_name = 'assign'
+    pk_url_kwarg = 'pk'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_hod:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+
+    # Add your context data
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super(HodUpdateAssign, self).get_context_data(**kwargs)
+        # Create any data and add it to the context
+        context['form_type'] = 'Update'
+        return context
+
+# Delete Assign
+class HodDeleteAssign(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = Assign
+    template_name = 'info/hod/assign_confirm_delete.html'
+    success_url = reverse_lazy('info:manage_department')
+    success_message = "Teacher was successfully unassigned from Class and Course."
+    context_object_name = 'assign'
+    pk_url_kwarg = 'pk'
+
+    def get(self, request, *args, **kwargs):
+        # self.object = None
+        if not request.user.is_hod:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+
+# Assign Time Slots
+class HodAssignTimeSlots(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = AssignTime
+    fields = ['assign', 'period', 'day']
+    template_name = 'info/hod/assign_time_form.html'
+    success_url = reverse_lazy('info:manage_department')
+    success_message = "Time slots were successfully assigned."
+    context_object_name = 'assign_time'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_hod:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+    
+# Delete Time Slots
+class HodDeleteTimeSlots(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = AssignTime
+    template_name = 'info/hod/assign_time_confirm_delete.html'
+    success_url = reverse_lazy('info:manage_department')
+    success_message = "Time slots were successfully deleted."
+    context_object_name = 'assign_time'
+    pk_url_kwarg = 'pk'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if not request.user.is_hod:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+    
+# HOD views Student Attendance
+class HodStudentAttendanceView(LoginRequiredMixin, TemplateView):
+    template_name = 'info/hod/student_attendance.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_hod:
+            context = self.get_context_data(**kwargs)
+            roll_number = kwargs['roll_number']
+            student = Student.objects.get(roll_number=roll_number)
+            assign_list = Assign.objects.filter(class_id_id=student.class_id)
+            attendance_list = []
+            for assign in assign_list:
+                try:
+                    attendance = AttendanceTotal.objects.get(student=student, course=assign.course)
+                except AttendanceTotal.DoesNotExist:
+                    attendance = AttendanceTotal(student=student, course=assign.course)
+                    attendance.save()
+                attendance_list.append(attendance)
+            context['attendance_list'] = attendance_list
+            context['class_id'] = student.class_id.id
+            context['student_name'] = student.name
+            context['roll_number'] = roll_number
+            return self.render_to_response(context)
+        return redirect('info:unauthorize_view')
+
+# HOD Views Student Attendance Detail View
+class HodStudentAttendanceDetailView(LoginRequiredMixin, TemplateView):
+    template_name = 'info/hod/student_attendance_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_hod:
+            context = self.get_context_data(**kwargs)
+            roll_number = kwargs['roll_number']
+            course_id = kwargs['course_id']
+            student = get_object_or_404(Student, roll_number=roll_number)
+            course = get_object_or_404(Course, id=course_id)
+            attendance_list = Attendance.objects.filter(course=course, student=student).order_by('date')
+            context['attendance_list'] = attendance_list
+            context['course'] = course
+            context['student'] = student
+            return self.render_to_response(context)
+        return redirect('info:unauthorize_view')
+    
+# Change Attendance
+class HodChangeAttendance(LoginRequiredMixin, RedirectView):
+    def get(self, request, *args, **kwargs):
+        attendance_id = kwargs['attendance_id']
+        attendance = get_object_or_404(Attendance, id=attendance_id)
+        attendance.status = not attendance.status
+        attendance.save()
+        return HttpResponseRedirect(reverse_lazy('info:hod_student_attendance_detail', kwargs={'roll_number': attendance.student.roll_number, 'course_id': attendance.course_id}))
+
+
+# Hod views Student Marks
+class HodStudentMarksListView(LoginRequiredMixin, TemplateView):
+    template_name = 'info/hod/student_marks_list.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_hod:
+            context = self.get_context_data(**kwargs)
+            roll_number = kwargs['roll_number']
+            student = Student.objects.get(roll_number=roll_number)
+            assign_list = Assign.objects.filter(class_id_id=student.class_id)
+            student_course_list = []
+            for assign in assign_list:
+                try:
+                    student_course = StudentCourse.objects.get(student=student, course=assign.course)
+                except:
+                    student_course = StudentCourse(student=student, course=assign.course)
+                    student_course.save()
+                    student_course.marks_set.create(name = 'Midterm 1')
+                    student_course.marks_set.create(name = 'Midterm 2')
+                    student_course.marks_set.create(name = 'Midterm 3')
+                    student_course.marks_set.create(name = 'Event 1')
+                    student_course.marks_set.create(name = 'Event 2')
+                    student_course.marks_set.create(name = 'Semester Final Exam')
+                student_course_list.append(student_course)
+            context['student_course_list'] = student_course_list
+            context['class_id'] = student.class_id.id
+            context['student_name'] = student.name
+            return self.render_to_response(context)
+        return redirect('info:unauthorize_view')
+    
+# HOD View Courses for Teacher
+class HodViewCoursesForTeacherView(LoginRequiredMixin, TemplateView):
+    template_name = 'info/hod/courses_for_teacher.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_hod:
+            context = self.get_context_data(**kwargs)
+            teacher_id = kwargs['teacher_id']
+            course_list = Assign.objects.filter(teacher=teacher_id)
+            context['course_list'] = course_list
+            context['teacher_name'] = Teacher.objects.get(teacher_id=teacher_id).name
+            return self.render_to_response(context)
+        return redirect('info:unauthorize_view')
+
+# HOD Reports View 
+class HodReportClassesView(LoginRequiredMixin, TemplateView):
+    template_name = 'info/hod/class_list.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_hod:
+            context = self.get_context_data(**kwargs)
+            class_list = Class.objects.filter(department=self.request.user.teacher.department_id)
+            context['class_list'] = class_list
+            return self.render_to_response(context)
+        return redirect('info:unauthorize_view')
+    
+# HOD Generate Report
+class HodReportView(LoginRequiredMixin, TemplateView):
+    template_name = 'info/hod/class_report.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_teacher:
+            context = self.get_context_data(**kwargs)
+            class_id = kwargs['class_id']
+            assign_list = Assign.objects.filter(class_id=class_id)
+            student_course_list = []
+            for assign in assign_list:
+                for student in assign.class_id.student_set.all():
+                    try:
+                        student_course = StudentCourse.objects.get(student=student, course=assign.course)
+                    except StudentCourse.DoesNotExist:
+                        student_course = StudentCourse.objects.create(student=student, course=assign.course)
+                        student_course.save()
+                    obj = StudentCourse.objects.get(student=student, course=assign.course)
+                    student_course_list.append(obj)
+            context['class'] = Class.objects.get(id=class_id)
+            context['student_count'] = Student.objects.filter(class_id=class_id).count()
+            context['student_course_list'] = student_course_list
+            return self.render_to_response(context)
+        return redirect('info:unauthorize_view')
+
 # ================== Inline Formset Views for Admin ================== #
 
 # Department Details
@@ -1212,7 +1826,7 @@ class AssignTimeEditView(LoginRequiredMixin, SingleObjectMixin, FormView):
     
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, 'Changes were saved for Students.')
+        messages.success(self.request, 'Changes were saved for Teacher.')
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
@@ -1280,3 +1894,31 @@ class UpdateMarks(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     
     def get_success_url(self):
         return reverse('info:student_course_detail', kwargs={'pk': self.object.student_course.pk})
+    
+# ================== Inline Formset Views for HOD ================== #
+
+# HOD Edits Periods for Teacher
+class HodAssignTimeEditView(LoginRequiredMixin, SingleObjectMixin, FormView):
+    model = Assign
+    template_name = 'info/hod/assign_time_edit.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=Assign.objects.all())
+        if not request.user.is_hod:
+            return redirect('info:unauthorize_view')
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=Assign.objects.all())
+        return super().post(request, *args, **kwargs)
+
+    def get_form(self, form_class = None):
+        return AssignTimeFormset(**self.get_form_kwargs(), instance=self.object)
+    
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Changes were saved for Teacher.')
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('info:hod_assign_detail', kwargs={'pk': self.object.pk})

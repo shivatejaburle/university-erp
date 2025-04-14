@@ -1,21 +1,48 @@
 # University Enterprise Resource Planning System
- University ERP system created using the Django framework, facilitating smooth interactions between students and teachers. Its core features include managing attendance, tracking marks, and organizing a timetable.
+ **U**niversity **E**nterprise **R**esource **P**lanning **S**ystem (**UERPS**) created using the Django framework, facilitating smooth interactions between students and teachers. **UERPS** core features include managing attendance, tracking marks, and organizing a timetable.
 
-## Functionality
+- **Department**
+    - A department serves as an educational sub-unit within the college, offering a variety of programmes and courses. Each department is overseen by a Head of the Department (HOD), who manages its operations and ensures effective functioning.
+
+- **Course**
+    - A course refers to a subject offered by a department during a semester, which students are required to complete to qualify for the Semester Final Examination (SFE) and, ultimately, the award of a Bachelor's Degree.
+
+- **Semester**
+    - A semester is a time period of five months during which a department offers a set of courses to students. Each academic year is composed of three semesters, including two regular semesters and one supplementary semester.
+- **Continuous Internal Evaluation**
+    - Continuous Internal Evaluation (CIE) is a system of ongoing assessments conducted throughout the semester to evaluate a student's academic performance. It typically consists of five events or examinations. At the end of the semester, the results from these evaluations are summed up and reduced to a total of 50 marks. 
+
+- **Semester Final Examination**
+    - The Semester Final Examination (SFE) is held at the conclusion of each semester to evaluate a student's academic performance. It is conducted for a total of 100 marks, which are then scaled down to 50 marks in the final assessment.
+
+- **Database Design**
+    - Please refer `UERPS-Tables.pdf` for more detail information about models used in this project.
+
+## UERPS Features
 - ### Login
-    - Common login page for Student, Teacher and Admin
-- ### Admin
+    - Common login page for Student, Teacher HOD and Admin
+    - Django Allauth Authentication
+- ### Admin Dashboard
     - Manage Departments, Courses, Classes and Marks
     - Manage Student and Teacher profiles
     - Schedule Classes (Timetable)
     - Reset Attendance
     - All the above operations can also be done using Django Administration
-- ### Teacher
+- ### HOD Dashboard
+    - Manage Courses and Classes
+    - Manage Student and Teacher profiles
+    - Schedule Classes (Timetable)
+    - View whole Department Timetable
+    - View Student Marks
+    - Manage Student Attendance
+    - Reports
+- ### Teacher Dashboard
     - Manage Attendance
     - Manage Marks
     - View Timetable
     - Reports
-- ### Student
+    - **View as HOD** is visible if teacher is HOD (for switching to HOD Dashboard)
+- ### Student Dashboard
     - View Attendance
     - View Marks
     - View Timetable
@@ -42,13 +69,27 @@ source venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
-### Collect static files (only on a production server)
+
+### Environment Settings
+
+Create `university-erp/.env` to store Email Configurations.
+
+```bash
+EMAIL_BACKEND = '<django.core.mail.backends.smtp.EmailBackend>'
+EMAIL_HOST = '<YOUR_SMTP_HOST>'
+EMAIL_PORT = <YOUR_PORT_NUMBER>
+EMAIL_USE_TLS = <True_OR_False>
+EMAIL_HOST_USER = '<YOUR_EMAIL_ADDRESS>'
+EMAIL_HOST_PASSWORD = '<YOUR_PASSWORD>'
+```
+
+### Collect static files (only on a Production Server)
 
 ```bash
 python manage.py collectstatic
 ```
 
-### Running a development server
+### Running a Development Server
 
 Just run this command:
 
@@ -60,13 +101,16 @@ Your application will be available @ http://127.0.0.1:8000/
 ### Login Information
 - **Admin**: 
     - Username : admin
+    - Email    : admin@university.edu
     - Password : Univ#12345
-- **Teacher**: 
+- **HOD and Teacher**: 
     - Username : aditi_t001
-    - Password : aditi_1990
+    - Email    : aditi@university.edu 
+    - Password : aditi_12345
 - **Student**: 
     - Username : neha_001
-    - Password : neha_1990
+    - Email    : neha@university.edu
+    - Password : neha_12345
 
 ## Screenshots
 ### Home Page
@@ -79,6 +123,18 @@ Your application will be available @ http://127.0.0.1:8000/
 ![Edit Periods](screenshots/A3-Edit-Periods.jpg)
 ![Reset Attendance](screenshots/A4-Reset-Attendance.jpg)
     **Note:** This action removes all existing attendance records and generates new ones within the specified time range.
+### HOD Dashboard
+![Teacher Dashboard](screenshots/H1-Teacher-as-HOD.jpg)
+![HOD Dashboard](screenshots/H2-HOD-Home.jpg)
+![Department Courses](screenshots/H3-Courses.jpg)
+![Department Classes](screenshots/H4-Classes.jpg)
+![Department Teachers](screenshots/H5-Teachers.jpg)
+![Department Students](screenshots/H6-Students.jpg)
+![Department Timetable](screenshots/H7-Timetable.jpg)
+![Department Reports](screenshots/H8-Reports.jpg)
+![Department Report Details](screenshots/H9-Report-Details.jpg)
+![Assign Course to Teachers](screenshots/H10-Assign-Teacher.jpg)
+![Assign Period to Teachers](screenshots/H11-Assign-Period.jpg)
 ### Teacher Dashboard
 ![Teacher Dashboard](screenshots/T1-Teacher-Home.jpg)
 ![Classes](screenshots/T2-Classes.jpg)

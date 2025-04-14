@@ -1,0 +1,45 @@
+{% extends 'info/hod/index.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>{{student_name}} - Attendance</h1>
+        <div class="table-responsive mt-3">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Course ID</th>
+                        <th scope="col">Course Name</th>
+                        <th scope="col">Classes Attended</th>
+                        <th scope="col">Total Classes</th>
+                        <th scope="col">Attendance %</th>
+                        <th scope="col">Classes to Attend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for obj in attendance_list %}
+                    <tr>
+                        <td class="align-middle">{{obj.course.id}}</td>
+                        <td class="align-middle">
+                            <a href="{% url 'info:hod_student_attendance_detail' roll_number obj.course.id %}" class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+                                {{obj.course.name}}
+                            </a>
+                        </td>
+                        <td class="align-middle">{{obj.attendance_class}}</td>
+                        <td class="align-middle">{{obj.total_class}}</td>
+                        {% if obj.attendance > 75 %}
+                            <td class="align-middle text-success">{{obj.attendance}} %</td>
+                        {% else %}
+                            <td class="align-middle text-danger">{{obj.attendance}} %</td>
+                        {% endif %}
+                        <td class="align-middle">{{obj.classes_to_attend}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p>
+            <a href="{% url 'info:hod_class_detail' class_id %}" class="btn btn-secondary">Back</a>
+        </p>
+    </div>
+{% endblock content %}
+    

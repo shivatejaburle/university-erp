@@ -1,0 +1,29 @@
+{% extends 'info/hod/index.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+    <div class="container mt-3">
+        
+        {% if form_type == 'Update' %}
+            <h1>Update a Student</h1>
+        {% else %}
+            <h1>Create a New Student</h1>
+        {% endif %}
+        <hr>
+
+        <form class="mb-3" action="" method="post">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+
+            <button type="submit" class="btn btn-primary">
+                {% if form_type == 'Update' %}
+                    Update Student
+                {% else %}
+                    Create Student
+                {% endif %}
+           </button>
+            <button type="button" class="btn btn-danger" 
+                onclick="window.location='{% url 'info:department_students' %}'">Cancel</button>
+        </form>
+    </div>
+{% endblock content %}

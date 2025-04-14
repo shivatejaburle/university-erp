@@ -1,0 +1,49 @@
+{% extends 'info/hod/index.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>{{student}} : {{course}} : Attendance Details</h1>
+        <div class="table-responsive mt-3">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">S.No.</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Day</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for obj in attendance_list %}
+                    <tr>
+                        <td class="align-middle">{{forloop.counter}}</td>
+                        <td class="align-middle">{{obj.date}}</td>
+                        <td class="align-middle">{{obj.date|date:"l"}}</td>
+                        {% if obj.status %}
+                            <td class="align-middle text-success">Present</td>
+                        {% else %}
+                            <td class="align-middle text-danger">Absent</td>
+                        {% endif %}
+                        <td class="align-middle">
+                            <a class="btn btn-sm btn-warning" href="{% url 'info:hod_change_attendance' obj.id %}">Change</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            <div class="alert alert-info mt-3" role="alert">
+                                Not available.
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p>
+            <a href="{% url 'info:hod_student_attendance' student.roll_number %}" class="btn btn-secondary">Back</a>
+        </p>
+    </div>
+{% endblock content %}
+    

@@ -1,0 +1,35 @@
+{% extends 'info/hod/index.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+    <div class="container">
+        <h1>Delete Course</h1>
+        <hr>
+        <form action="" method="post">
+            {% csrf_token %}
+            <p>Are you sure you want to delete the course <span class="text-danger">"{{ course.name }}"</span>?</p>
+            <div class="table-responsive mt-3">
+                <table class="table table-danger">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Short Name</th>
+                            <th scope="col">Department</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{course.id}}</td>
+                            <td>{{course.name}}</td>
+                            <td>{{course.short_name}}</td>
+                            <td>{{course.department}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <button type="button" class="btn btn-primary" onclick="window.location='{% url 'info:department_courses' %}'">Cancel</button>
+        </form>
+    </div>
+{% endblock content %}

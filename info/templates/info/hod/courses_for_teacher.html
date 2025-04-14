@@ -1,0 +1,50 @@
+{% extends 'info/hod/index.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>{{teacher_name}} - Courses</h1>
+        <hr>
+        <div class="table-responsive mt-3">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Course Name</th>
+                        <th scope="col">Department</th>
+                        <th scope="col">Semester</th>
+                        <th scope="col">Section</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for obj in course_list  %}
+                    <tr>
+                        <td class="align-middle">{{obj.course.name}}</td>
+                        <td class="align-middle">{{obj.class_id.department.id}}</td>
+                        <td class="align-middle">{{obj.class_id.semester}}</td>
+                        <td class="align-middle">{{obj.class_id.section}}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">
+                            <div class="alert alert-info mt-3" role="alert">
+                                No Courses found for Teacher.
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}   
+                </tbody>
+            </table>
+        </div>
+        <p>
+            {% comment %} <a href="{% url 'info:hod_assign_time_edit' assign.id %}" class="btn btn-warning">
+                
+                {% if assign.assigntime_set.all|length == 0 %}
+                    Add Period
+                {% else %}
+                    Edit all Periods
+                {% endif %}
+            </a> {% endcomment %}
+            <a href="{% url 'info:department_teachers' %}" class="btn btn-secondary">Back</a>
+        </p>    
+    </div>
+{% endblock content %}
+    

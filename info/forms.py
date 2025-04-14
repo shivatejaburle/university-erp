@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from info.models import User, Department, Course, Class, Teacher, Student, Assign, AssignTime, StudentCourse, Marks
+from info.models import User, Department, Course, Class, Teacher, Student, Assign, AssignTime, StudentCourse, Marks, HOD
 from django.forms.models import inlineformset_factory
 
 class AdminForm(ModelForm):
@@ -52,6 +52,15 @@ class TeacherForm(ModelForm):
         }
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+class HODForm(ModelForm):
+    class Meta:
+        model = HOD
+        fields = ['name', 'department']
+        labels = {
+            'name': 'Choose the Teacher',
+            'department': 'Choose the Department',
         }
 
 class StudentForm(ModelForm):

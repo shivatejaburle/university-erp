@@ -1,0 +1,53 @@
+{% extends 'info/hod/index.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>List of Students</h1>
+        <hr>
+        {% if student_list %}
+            <div class="table-responsive mt-3">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Roll Number</th>
+                            <th scope="col">Student Name</th>
+                            <th scope="col">Gender</th>
+                            <th scope="col">Date of Birth</th>
+                            <th scope="col">Class</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in student_list  %}
+                        <tr>
+                            <td class="align-middle">{{student.roll_number}}</td>
+                            <td class="align-middle">{{student.name}}</td>
+                            <td class="align-middle">{{student.gender}}</td>
+                            <td class="align-middle">{{student.date_of_birth}}</td>
+                            <td class="align-middle">{{student.class_id.department.id}} - {{student.class_id.section}} - {{student.class_id.semester}}</td>
+                            <td class="align-middle">
+                                <button type="button" class="btn btn-sm btn-primary m-1"
+                                    onclick="window.location = '{% url 'info:hod_student_marks' student.roll_number %}'">
+                                Marks
+                                </button>
+                                <button type="button" class="btn btn-sm btn-primary m-1"
+                                    onclick="window.location = '{% url 'info:hod_student_attendance' student.roll_number %}'">
+                                Attendance
+                                </button>
+                                <button type="button" class="btn btn-sm btn-secondary m-1"
+                                    onclick="window.location = '{% url 'info:hod_student_update' student.roll_number %}'">
+                                Update
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}   
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info mt-3" role="alert">
+                There are no Students in the database.
+            </div>
+        {% endif %} 
+    </div>
+{% endblock content %}

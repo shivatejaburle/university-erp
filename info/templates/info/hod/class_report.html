@@ -1,0 +1,61 @@
+{% extends 'info/hod/index.html' %}
+{% load custom_tags %}
+{% block content %}
+    <div class="container">
+        <div class="table-responsive mt-3">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="align-middle text-center" colspan="5">
+                            <h1>{{class}} : Report</h1>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student_course in student_course_list %}
+                        {% if forloop.counter0|modulus:student_count == 0 %}
+                            <tr>
+                                <th colspan="5">
+                                    <h2 class="mt-3">{{student_course.course}}</h2>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th scope="col">Roll Number</th>
+                                <th scope="col">Student Name</th>
+                                <th scope="col">Attendance</th>
+                                <th scope="col">CIE</th>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <td class="align-middle">{{student_course.student_id}}</td>
+                            <td class="align-middle">{{student_course.student.name}}</td>
+                            {% if student_course.get_attendance > 75 %}
+                                <td class="align-middle text-success">{{student_course.get_attendance}} %</td>
+                            {% else %}
+                                <td class="align-middle text-danger">{{student_course.get_attendance}} %</td>
+                            {% endif %}
+
+                            {% if student_course.get_cie > 25 %}
+                                <td class="align-middle text-success">{{student_course.get_cie}} %</td>
+                            {% else %}
+                                <td class="align-middle text-danger">{{student_course.get_cie}} %</td>
+                            {% endif %}
+                        </tr>
+                    {% empty %}
+                        <tr class="align-middle">
+                            <td colspan="4">
+                                <div class="alert alert-info mt-3" role="alert">
+                                    Students has no Courses.
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}   
+                </tbody>
+            </table>
+        </div>
+        <p>
+           <a href="{% url 'info:hod_report_classes' %}" class="btn btn-secondary">Back</a>
+        </p>   
+    </div>
+{% endblock content %}
+    

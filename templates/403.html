@@ -1,0 +1,19 @@
+{% extends 'base_master.html' %}
+{% load static %}
+
+{% block title %}
+    University ERP System
+{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <div class="text-center">
+            <div class="alert alert-warning" role="alert">
+                <h1 class="text-danger">Forbidden</h1>
+            </div>
+            <img src="{% static 'info/img/univ-logo.png' %}" alt="univ-logo" class="img-fluid">
+            <p class="lead">University Enterprise Resource Planning System</p>
+            <a class="btn btn-lg btn-primary" href="{% url 'info:index_view' %}">Go Home</a>
+        </div>
+    </div>
+{% endblock content %}
