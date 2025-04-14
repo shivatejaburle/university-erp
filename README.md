@@ -66,11 +66,6 @@ source venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
-### Collect static files (only on a production server)
-
-```bash
-python manage.py collectstatic
-```
 
 ### Environment Settings
 
@@ -85,7 +80,13 @@ EMAIL_HOST_USER = '<YOUR_EMAIL_ADDRESS>'
 EMAIL_HOST_PASSWORD = '<YOUR_PASSWORD>'
 ```
 
-### Running a development server
+### Collect static files (only on a Production Server)
+
+```bash
+python manage.py collectstatic
+```
+
+### Running a Development Server
 
 Just run this command:
 
