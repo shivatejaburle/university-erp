@@ -15,6 +15,9 @@
 - **Semester Final Examination**
     - The Semester Final Examination (SFE) is held at the conclusion of each semester to evaluate a student's academic performance. It is conducted for a total of 100 marks, which are then scaled down to 50 marks in the final assessment.
 
+- **Database Design**
+    - Please refer `UERPS-Tables.pdf` for more detail information about models used in this project.
+
 ## UERPS Features
 - ### Login
     - Common login page for Student, Teacher HOD and Admin
