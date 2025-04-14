@@ -1,4 +1,4 @@
-{% extends 'base_master.html' %}
+{% extends 'info/hod/index.html' %}
 
 {% block content %}
     <div class="container">
@@ -19,7 +19,7 @@
                         <td class="align-middle">{{assign_time.period}}</td>
                         <td class="align-middle">{{assign_time.day}}</td>
                         <td>
-                            <a href="{% url 'info:assign_time_delete' assign_time.id %}" class="btn btn-danger btn-sm">Delete</a>
+                            <a href="{% url 'info:hod_assign_time_delete' assign_time.id %}" class="btn btn-danger btn-sm">Delete</a>
                         </td>
                     </tr>
                     {% empty %}
@@ -35,7 +35,7 @@
             </table>
         </div>
         <p>
-            <a href="{% url 'info:assign_time_edit' assign.id %}" class="btn btn-warning">
+            <a href="{% url 'info:hod_assign_time_edit' assign.id %}" class="btn btn-warning">
                 
                 {% if assign.assigntime_set.all|length == 0 %}
                     Add Period
@@ -43,7 +43,7 @@
                     Edit all Periods
                 {% endif %}
             </a>
-            <a href="{% url 'info:manage_data_nav' %}" class="btn btn-secondary">Back</a>
+            <a href="{% url 'info:manage_department' %}" class="btn btn-secondary">Back</a>
         </p>    
     </div>
 {% endblock content %}

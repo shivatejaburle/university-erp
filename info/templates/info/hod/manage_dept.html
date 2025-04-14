@@ -1,0 +1,147 @@
+{% extends 'info/hod/index.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+<div class="container">
+    <div class="accordion" id="accordionManageData">
+        <!-- HOD -->
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed fs-3 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#hods" aria-expanded="false" aria-controls="hods">
+                    HODs Info
+                </button>
+            </h2>
+            <div id="hods" class="accordion-collapse collapse" data-bs-parent="#accordionManageData">
+                <div class="accordion-body">
+                    {% if hod_list %}
+                        <div class="table-responsive mt-3">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">HOD Name</th>
+                                        <th scope="col">Department</th>
+                                        <th scope="col">Email</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for hod in hod_list  %}
+                                    <tr>
+                                        <td class="align-middle">{{hod.name.name}}</td>
+                                        <td class="align-middle">{{hod.department}}</td>
+                                        <td class="align-middle">{{hod.name.user.email}}</td>
+                                    </tr>
+                                    {% endfor %}   
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info mt-3" role="alert">
+                            There are no HODs in the database.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <!-- Assign -->
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed fs-3 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#assign" aria-expanded="false" aria-controls="assign">
+                    Assign Teachers
+                </button>
+            </h2>
+            <div id="assign" class="accordion-collapse collapse" data-bs-parent="#accordionManageData">
+                <div class="accordion-body">
+                    <a class="btn btn-primary" href="{% url 'info:hod_assign_create' %}">Assign Teacher</a>
+                    {% if assign_list %}
+                        <div class="table-responsive mt-3">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Teacher Name</th>
+                                        <th scope="col">Class</th>
+                                        <th scope="col">Course</th>
+                                        <th scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for assign in assign_list  %}
+                                    <tr>
+                                        <td class="align-middle">{{assign.teacher.name}}</td>
+                                        <td class="align-middle">
+                                            <a href="{% url 'info:hod_assign_detail' assign.id %}" class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+                                                {{assign.class_id}}
+                                            </a>
+                                        </td>
+                                        <td class="align-middle">{{assign.course}}</td>
+                                        <td class="align-middle">
+                                            <button type="button" class="btn btn-sm btn-secondary m-1"
+                                                onclick="window.location = '{% url 'info:hod_assign_update' assign.id %}'">
+                                            Update
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger m-1"
+                                                onclick="window.location = '{% url 'info:hod_assign_delete' assign.id %}'">
+                                            Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}   
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info mt-3" role="alert">
+                            You did not Assign any Teacher to Class and Course.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <!-- Assign Time -->
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed fs-3 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#assignSlots" aria-expanded="false" aria-controls="assignSlots">
+                    Assign Periods
+                </button>
+            </h2>
+            <div id="assignSlots" class="accordion-collapse collapse" data-bs-parent="#accordionManageData">
+                <div class="accordion-body">
+                    <a class="btn btn-primary" href="{% url 'info:hod_assign_time_create' %}">Assign Period</a>
+                    {% if assign_time_list %}
+                        <div class="table-responsive mt-3">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Teacher</th>
+                                        <th scope="col">Period</th>
+                                        <th scope="col">Day</th>
+                                        <th scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for assign_time in assign_time_list  %}
+                                    <tr>
+                                        <td class="align-middle">{{assign_time.assign}}</td>
+                                        <td class="align-middle">{{assign_time.period}}</td>
+                                        <td class="align-middle">{{assign_time.day}}</td>
+                                        <td class="align-middle">
+                                            <button type="button" class="btn btn-sm btn-danger m-1"
+                                                onclick="window.location = '{% url 'info:hod_assign_time_delete' assign_time.id %}'">
+                                            Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}   
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info mt-3" role="alert">
+                            You did not Assign any Periods for Teacher.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

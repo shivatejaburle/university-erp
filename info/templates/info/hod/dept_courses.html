@@ -1,0 +1,48 @@
+{% extends 'info/hod/index.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>List of Courses</h1>
+        <hr>
+        <a class="btn btn-primary" href="{% url 'info:hod_course_create' %}">Add Course</a>
+        {% if course_list %}
+            <div class="table-responsive mt-3">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Short Name</th>
+                            <th scope="col">Department</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for course in course_list  %}
+                        <tr>
+                            <td class="align-middle">{{course.id}}</td>
+                            <td class="align-middle">{{course.name}}</td>
+                            <td class="align-middle">{{course.short_name}}</td>
+                            <td class="align-middle">{{course.department.name}}</td>
+                            <td class="align-middle">
+                                <button type="button" class="btn btn-sm btn-secondary m-1"
+                                    onclick="window.location = '{% url 'info:hod_course_update' course.id %}'">
+                                Update
+                                </button>
+                                <button type="button" class="btn btn-sm btn-danger m-1"
+                                    onclick="window.location = '{% url 'info:hod_course_delete' course.id %}'">
+                                Delete
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}   
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info mt-3" role="alert">
+                There are no Courses in the database.
+            </div>
+        {% endif %}   
+    </div>
+{% endblock content %}

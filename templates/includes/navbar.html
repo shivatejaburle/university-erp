@@ -52,6 +52,11 @@
             <li class="nav-item">
               <a class="nav-link" href="{% url 'info:teacher_report_classes' %}">Reports</a>
             </li>
+            {% if request.user.is_hod %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'info:hod_view' %}">View as HOD</a>
+              </li>
+            {% endif %}
           <!-- Admin Dashboard -->
           {% else %}
             <li class="nav-item">

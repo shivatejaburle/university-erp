@@ -1,0 +1,70 @@
+{% extends 'info/hod/index.html' %}
+{% load custom_tags %}
+{% block custom_css %}
+    <style>
+        th:first-child, td:first-child
+        {
+            position:sticky;
+            left:0px;
+        }
+    </style>
+{% endblock custom_css %}
+    
+{% block content %}
+    <div class="container">
+        <h1 class="text-center">{{request.user.teacher.department}}</h1>
+        <hr>
+        {% for class_timetable in timetable %}
+            <h2>{{class_names|index:forloop.counter0}} Timetable</h2>
+            <div class="table-responsive mt-3">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr class="table-primary border border-light">
+                            <th scope="col">Days / Periods</th>
+                            <th scope="col">07:30 AM - 08:30 AM</th>
+                            <th scope="col">08:30 AM - 09:30 AM</th>
+                            <th scope="col">09:30 AM - 10:30 AM</th>
+                            <th scope="col">10:30 AM - 11:00 AM</th>
+                            <th scope="col">11:00 AM - 11:50 AM</th>
+                            <th scope="col">11:50 AM - 12:40 PM</th>
+                            <th scope="col">12:40 PM - 01:30 PM</th>
+                            <th scope="col">01:30 PM - 02:30 PM</th>
+                            <th scope="col">02:30 PM - 03:30 PM</th>
+                            <th scope="col">03:30 PM - 04:30 PM</th>
+                            <th scope="col">04:30 PM - 05:30 PM</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for day in class_timetable %}
+                        <tr>
+                            {% for period in day %}
+                                {% if forloop.counter == 1 %}
+                                    <th class="table-primary border border-light align-middle" scope="row">
+                                        {{period}}
+                                    </th>
+                                {% elif forloop.counter == 5 %}
+                                    <td class="table-info text-center border border-light align-middle">
+                                        <b>Break</b>
+                                    </td>
+                                {% elif forloop.counter == 9 %}
+                                    <td class="table-info text-center border border-light align-middle">
+                                        <b>Lunch</b>
+                                    </td>
+                                {% elif period == True %}
+                                    <td class="align-middle"></td>
+                                {% else %}
+                                    <td class="text-center">
+                                        {{period.course_id}}<br>{{period.teacher.name}}
+                                    </td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}   
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
+        
+    </div>
+{% endblock content %}
+    

@@ -1,0 +1,115 @@
+{% extends 'base_master.html' %}
+{% load static %}
+
+{% block header %}
+{% load static %}
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark" aria-label="University Navbar">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'info:hod_view' %}">
+      <img src="{% static 'info/img/univ-logo.png' %}" alt="Logo" width="30" class="d-inline-block align-text-top">
+      HOD Dashboard
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbar">
+      <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+        {% if request.user.is_authenticated  %}
+          <!-- HOD Dashboard -->
+          {% if request.user.is_hod %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'info:hod_view' %}">Home</a>          
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:department_courses' %}">Courses</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'info:department_classes' %}">Classes</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:department_teachers' %}">Teachers</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:department_students' %}">Students</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:department_timetable' %}">Timetable</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:hod_report_classes' %}">Reports</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:manage_department' %}">Manage</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'info:teacher_view' %}">View as Teacher</a>
+            </li>
+          {% endif %}
+        {% endif %}
+      </ul>
+
+      <ul class="navbar-nav mb-2 mb-sm-0">
+        <li class="nav-item">
+          <a class="nav-link text-capitalize">
+              {{request.user.teacher.name}}
+          </a>
+        </li>
+        <li class="nav-item">
+          {% if request.user.is_authenticated %}
+            <a class="btn btn-danger m-1" href="{% url 'account_logout' %}">Logout</a>
+          {% else %}
+            <a class="btn btn-outline-light m-1" href="{% url 'account_login' %}">Login</a>
+          {% endif %}
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+{% endblock header %}
+    
+{% block content %}
+<div class="container">
+    <div class="row d-sm-block d-md-none">
+        <div class="text-center">
+            <h1 class="mb-4">Welcome {{request.user.teacher.name}}<sub class="fs-6"> HOD</sub></h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col d-none d-md-block">
+            <div class="text-center">
+                <h1 class="mt-3">Welcome {{request.user.teacher.name}}<sub class="fs-6"> HOD</sub></h1>
+                <img src="{% static 'info/img/univ-logo.png' %}" alt="univ-logo" class="img-fluid">
+                <p class="lead">University Enterprise Resource Planning System</p>
+            </div>
+        </div>
+        <div class="col-md-12 col-lg-6">
+            <div class="row">
+                <div class="col-6 col-md-3 col-lg-4 text-center m-sm-0 m-lg-3">
+                    <h2 class="text-secondary">Classes</h2>
+                    <a href="{% url 'info:department_classes' %}">
+                        <img src="{% static 'info/img/univ_class.png' %}" alt="attendance" class="img-fluid img-thumbnail">
+                    </a>
+                </div>
+                <div class="col-6 col-md-3 col-lg-4 text-center m-sm-0 m-lg-3">
+                    <h2 class="text-secondary">Teachers</h2>
+                    <a href="{% url 'info:department_teachers' %}">
+                        <img src="{% static 'info/img/teacher.png' %}" alt="marks" class="img-fluid img-thumbnail">
+                    </a>
+                </div>
+                <div class="col-6 col-md-3 col-lg-4 text-center m-sm-0 m-lg-3">
+                    <h2 class="text-secondary">Students</h2>
+                    <a href="{% url 'info:department_students' %}">
+                        <img src="{% static 'info/img/student.png' %}" alt="timetable" class="img-fluid img-thumbnail">
+                    </a>
+                </div>
+                <div class="col-6 col-md-3 col-lg-4 text-center m-sm-0 m-lg-3">
+                    <h2 class="text-secondary">Manage</h2>
+                    <a href="{% url 'info:manage_department' %}">
+                        <img src="{% static 'info/img/univ_dept.png' %}" alt="reports" class="img-fluid img-thumbnail">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

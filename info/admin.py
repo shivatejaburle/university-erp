@@ -1,5 +1,5 @@
 from django.contrib import admin
-from info.models import User, Department, Class, Student, Course, Teacher, Assign, StudentCourse, AttendanceClass, AssignTime, Marks, AttendanceRange, Attendance
+from info.models import User, Department, Class, Student, Course, Teacher, Assign, StudentCourse, AttendanceClass, AssignTime, Marks, AttendanceRange, Attendance, HOD
 from datetime import timedelta, datetime
 from django.urls import path
 from django.http import HttpResponseRedirect
@@ -39,7 +39,7 @@ class MarksInline(admin.TabularInline):
 # Register your models here.
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'is_superuser', 'is_student', 'is_teacher')
+    list_display = ('username', 'email', 'is_superuser', 'is_student', 'is_teacher', 'is_hod')
 
 class DepartmentAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
@@ -132,3 +132,4 @@ admin.site.register(Teacher, TeacherAdmin)
 admin.site.register(Assign, AssignAdmin)
 admin.site.register(StudentCourse, StudentCourseAdmin)
 admin.site.register(AttendanceClass, AttendanceClassAdmin)
+admin.site.register(HOD)

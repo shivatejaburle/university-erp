@@ -47,6 +47,7 @@ exam_name = (
 class User(AbstractUser):
     is_student = models.BooleanField(default=False, verbose_name='Student Status')
     is_teacher = models.BooleanField(default=False, verbose_name='Teacher Status')
+    is_hod = models.BooleanField(default=False, verbose_name='HOD Status')
 
 # Department
 class Department(models.Model):
@@ -108,7 +109,18 @@ class Teacher(models.Model):
     date_of_birth = models.DateField(default='1970-21-10')
 
     def __str__(self):
-        return self.name
+        return self.name + " : " + self.department.name
+    
+# HOD
+class HOD(models.Model):
+    name = models.OneToOneField(Teacher, on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = 'HODs'
+
+    def __str__(self):
+        return self.name.name + " : " + self.department.name + " : HOD"
     
 # Assign Class and Course to Teacher
 class Assign(models.Model):
@@ -121,6 +133,9 @@ class Assign(models.Model):
 
     def get_absolute_url(self):
         return reverse('info:assign_detail', kwargs={'pk': self.pk})
+    
+    def get_hod_absolute_url(self):
+        return reverse('info:hod_assign_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         cl = Class.objects.get(id = self.class_id_id)
