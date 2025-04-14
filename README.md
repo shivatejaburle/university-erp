@@ -110,7 +110,7 @@ Your application will be available @ http://127.0.0.1:8000/
 - **Student**: 
     - Username : neha_001
     - Email    : neha@university.edu
-    - Password : neha_1990
+    - Password : neha_12345
 
 ## Screenshots
 ### Home Page

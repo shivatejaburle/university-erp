@@ -1,0 +1,24 @@
+{% extends 'account/base_entrance.html' %}
+{% load django_bootstrap5 %}
+{% load static %}
+
+{% block title %}
+    University ERP System
+{% endblock title %}
+
+{% block header %}
+    {% include 'includes/navbar.html' %}
+{% endblock header %}
+
+{% block content %}
+    <div class="container mt-3">
+        <div class="text-center">
+            <h1 class="mt-5 text-danger">Please contact University Administrator to get your account details.</h1>
+            <img src="{% static 'info/img/univ-logo.png' %}" alt="univ-logo" class="img-fluid">
+            <p class="lead">University Enterprise Resource Planning System</p>
+            <a class="btn btn-lg btn-primary" href="{% url 'info:index_view' %}">Go Home</a>
+        </div>
+    </div>
+{% endblock content %}
+    
+    

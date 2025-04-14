@@ -1,0 +1,91 @@
+{% extends 'account/base_entrance.html' %}
+{% load django_bootstrap5 %}
+{% load allauth %}
+
+{% block title %}
+    University ERP System
+{% endblock title %}
+
+{% block header %}
+    {% include 'includes/navbar.html' %}
+{% endblock header %}
+
+{% block content %}
+    <div class="container mb-3">
+        <h1>Email Addresses</h1>
+        {% if emailaddresses %}
+            <p>The following email addresses are associated with your account:</p>
+            {% url 'account_email' as email_url %}
+            {% element form form=form action=email_url method="post" tags="email,list" %}
+                {% slot body %}
+                    {% csrf_token %}
+                    <div class="container mb-3 border border-2 rounded-4 p-3">
+                        {% for radio in emailaddress_radios %}
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="email" 
+                                    id="{{radio.id}}" value="{{radio.emailaddress.email}}"
+                                    {% if radio.checked == True %}
+                                        checked
+                                    {% endif %}
+                                >
+                                <label class="form-check-label" for="email">
+                                {{radio.emailaddress.email}} <br>
+                                {% if radio.emailaddress.verified %}
+                                    {% element badge tags="success,email,verified" %}
+                                        <span class="badge text-bg-success">Verified</span>
+                                    {% endelement %}
+                                {% else %}
+                                    {% element badge tags="warning,email,unverified" %}
+                                        <span class="badge text-bg-danger">Unverified</span>
+                                    {% endelement %}
+                                {% endif %}
+                                {% if radio.emailaddress.primary %}
+                                    {% element badge tags="email,primary" %}
+                                        <span class="badge text-bg-primary">Primary</span>
+                                    {% endelement %}
+                                {% endif %}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endslot %}
+                {% slot actions %}
+                    <button type="submit" class="btn btn-primary" name="action_primary">Make Primary</button>
+                    <button type="submit" class="btn btn-warning" name="action_send">Re-send Verification</button>
+                    <button type="submit" class="btn btn-danger" name="action_remove">Remove</button>
+                {% endslot %}
+            {% endelement %}
+        {% else %}
+            {% include "account/snippets/warn_no_email.html" %}
+        {% endif %}
+        {% if can_add_email %}
+            <div class="container mt-3">
+                <h2>Add Email Address</h2>
+                {% url 'account_email' as action_url %}
+                {% element form form=form method="post" action=action_url tags="email,add" %}
+                    {% slot body %}
+                        {% csrf_token %}
+                        {% bootstrap_form form %}
+                    {% endslot %}
+                    {% slot actions %}
+                        <button type="submit" class="btn btn-primary" name="action_add">Add Email</button>
+                    {% endslot %}
+                {% endelement %}
+            </div>
+        {% endif %}
+    </div>
+    <script type="text/javascript">
+        (function() {
+          var message = "Do you really want to remove the selected email address?";
+          var actions = document.getElementsByName('action_remove');
+          if (actions.length) {
+            actions[0].addEventListener("click", function(e) {
+              if (! confirm(message)) {
+                e.preventDefault();
+              }
+            });
+          }
+        })();
+            </script>
+{% endblock content %}
+    
